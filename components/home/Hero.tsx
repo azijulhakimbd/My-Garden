@@ -17,20 +17,20 @@ import { Badge } from "@/components/ui/badge";
 
 const plants = [
   {
-    name: "Mango Tree",
-    status: "Healthy",
+    name: "আম গাছ",
+    status: "সুস্থ",
     icon: "🥭",
     color: "bg-amber-50 dark:bg-amber-500/10",
   },
   {
-    name: "Rose",
-    status: "Flowering",
+    name: "গোলাপ",
+    status: "ফুল ফুটছে",
     icon: "🌹",
     color: "bg-rose-50 dark:bg-rose-500/10",
   },
   {
-    name: "Basil",
-    status: "Needs water",
+    name: "তুলসী",
+    status: "পানি প্রয়োজন",
     icon: "🌿",
     color: "bg-emerald-50 dark:bg-emerald-500/10",
   },
@@ -42,6 +42,7 @@ export function Hero() {
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-40 top-40 size-[500px] rounded-full bg-emerald-300/20 blur-[120px] dark:bg-emerald-500/10" />
+
         <div className="absolute -right-40 top-20 size-[500px] rounded-full bg-lime-300/20 blur-[120px] dark:bg-lime-500/10" />
 
         <div
@@ -56,6 +57,7 @@ export function Hero() {
 
       <section className="relative mx-auto max-w-7xl px-4 pb-20 pt-36 sm:px-6 sm:pt-40 lg:px-8 lg:pb-28">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+
           {/* Left */}
           <div className="max-w-3xl">
             <Badge
@@ -63,20 +65,21 @@ export function Hero() {
               className="mb-6 gap-2 rounded-full border border-emerald-200/70 bg-white/70 px-4 py-2 text-emerald-700 shadow-sm backdrop-blur dark:border-emerald-400/20 dark:bg-emerald-500/10 dark:text-emerald-300"
             >
               <Sparkles className="size-3.5" />
-              Your personal digital garden
+              আমার ব্যক্তিগত ডিজিটাল বাগান
             </Badge>
 
             <h1 className="text-balance text-5xl font-black tracking-[-0.045em] text-slate-950 sm:text-6xl lg:text-7xl xl:text-[80px] dark:text-white">
-              Grow a garden
-              <span className="block bg-gradient-to-r from-emerald-600 via-green-500 to-lime-500 bg-clip-text text-transparent">
-                you can understand.
+              আমার বাগানকে
+              <span className="block bg-gradient-to-r from-emerald-600 via-green-500 to-lime-500 bg-clip-text p-2 text-transparent">
+                আরও সুন্দরভাবে জানুন।
               </span>
             </h1>
 
             <p className="mt-6 max-w-2xl text-pretty text-base leading-8 text-slate-600 sm:text-lg dark:text-slate-300">
-              Track every plant, remember every task, understand what your
-              garden needs, and watch it grow — all from one beautiful garden
-              dashboard.
+              আমার প্রতিটি গাছের তথ্য সংরক্ষণ করুন, প্রয়োজনীয় পরিচর্যার
+              কথা মনে রাখুন, বাগানের প্রয়োজন বুঝুন এবং সময়ের সাথে গাছের
+              বেড়ে ওঠা পর্যবেক্ষণ করুন—সবকিছু একটি সুন্দর বাগান
+              ড্যাশবোর্ড থেকে।
             </p>
 
             {/* CTA */}
@@ -87,7 +90,7 @@ export function Hero() {
                 className="h-12 rounded-xl bg-emerald-600 px-6 text-white shadow-xl shadow-emerald-600/20 hover:bg-emerald-700"
               >
                 <Link href="/garden">
-                  Explore My Garden
+                  আমার বাগান দেখুন
                   <ArrowRight className="ml-2 size-4" />
                 </Link>
               </Button>
@@ -100,7 +103,7 @@ export function Hero() {
               >
                 <Link href="/plants">
                   <Leaf className="mr-2 size-4 text-emerald-600" />
-                  Browse Plants
+                  গাছপালা দেখুন
                 </Link>
               </Button>
             </div>
@@ -111,41 +114,43 @@ export function Hero() {
                 <span className="flex size-5 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/10">
                   <Check className="size-3 text-emerald-600" />
                 </span>
-                Plant tracking
+                গাছের তথ্য সংরক্ষণ
               </span>
 
               <span className="flex items-center gap-2">
                 <span className="flex size-5 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/10">
                   <Check className="size-3 text-emerald-600" />
                 </span>
-                Smart reminders
+                পরিচর্যার অনুস্মারক
               </span>
 
               <span className="flex items-center gap-2">
                 <span className="flex size-5 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/10">
                   <Check className="size-3 text-emerald-600" />
                 </span>
-                Garden insights
+                বাগানের তথ্য বিশ্লেষণ
               </span>
             </div>
           </div>
 
-          {/* Right visual */}
+          {/* Right Visual */}
           <div className="relative mx-auto w-full max-w-xl lg:ml-auto">
+
             {/* Glow */}
             <div className="absolute inset-10 rounded-full bg-emerald-400/20 blur-[80px] dark:bg-emerald-500/10" />
 
-            {/* Main dashboard */}
+            {/* Main Dashboard */}
             <div className="relative rounded-[2rem] border border-white/80 bg-white/80 p-4 shadow-2xl shadow-emerald-950/10 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/80 sm:p-5">
+
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Garden overview
+                    বাগানের সারসংক্ষেপ
                   </p>
 
                   <h2 className="mt-1 text-lg font-bold text-slate-950 dark:text-white">
-                    Good morning 🌱
+                    শুভ সকাল 🌱
                   </h2>
                 </div>
 
@@ -158,37 +163,38 @@ export function Hero() {
               <div className="mt-5 grid grid-cols-3 gap-3">
                 <StatCard
                   icon={<TreePine className="size-4" />}
-                  value="24"
-                  label="Plants"
+                  value="২৪"
+                  label="গাছ"
                 />
 
                 <StatCard
                   icon={<Droplets className="size-4" />}
-                  value="4"
-                  label="Watering"
+                  value="৪"
+                  label="পানি দেওয়া"
                 />
 
                 <StatCard
                   icon={<Leaf className="size-4" />}
-                  value="86%"
-                  label="Health"
+                  value="৮৬%"
+                  label="সুস্থতা"
                 />
               </div>
 
-              {/* Garden health */}
+              {/* Garden Health */}
               <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 dark:border-white/5 dark:bg-white/[0.03]">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                      Garden health
+                      বাগানের সুস্থতা
                     </p>
+
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                      Looking great this week
+                      এই সপ্তাহে বাগান ভালো আছে
                     </p>
                   </div>
 
                   <span className="text-xl font-bold text-emerald-600">
-                    86%
+                    ৮৬%
                   </span>
                 </div>
 
@@ -201,49 +207,53 @@ export function Hero() {
               <div className="mt-4">
                 <div className="mb-3 flex items-center justify-between">
                   <p className="text-sm font-bold text-slate-900 dark:text-white">
-                    Today's garden
+                    আজকের বাগানের কাজ
                   </p>
 
                   <Link
                     href="/tasks"
                     className="text-xs font-semibold text-emerald-600 hover:text-emerald-700"
                   >
-                    View all
+                    সব দেখুন
                   </Link>
                 </div>
 
                 <div className="space-y-2">
                   <Task
                     icon={<Droplets className="size-4" />}
-                    title="Water Mango Tree"
-                    time="Today · 8:00 AM"
+                    title="আম গাছে পানি দিন"
+                    time="আজ · সকাল ৮:০০"
                   />
 
                   <Task
                     icon={<Leaf className="size-4" />}
-                    title="Check Tomato leaves"
-                    time="Today · 10:00 AM"
+                    title="টমেটো গাছের পাতা দেখুন"
+                    time="আজ · সকাল ১০:০০"
                   />
 
                   <Task
                     icon={<CalendarDays className="size-4" />}
-                    title="Fertilize Rose"
-                    time="Tomorrow · 9:00 AM"
+                    title="গোলাপ গাছে সার দিন"
+                    time="আগামীকাল · সকাল ৯:০০"
                   />
                 </div>
               </div>
 
-              {/* Plant list */}
+              {/* Plant List */}
               <div className="mt-5 grid grid-cols-3 gap-2">
                 {plants.map((plant) => (
                   <div
                     key={plant.name}
                     className={`rounded-2xl p-3 ${plant.color}`}
                   >
-                    <div className="text-2xl">{plant.icon}</div>
+                    <div className="text-2xl">
+                      {plant.icon}
+                    </div>
+
                     <p className="mt-2 truncate text-xs font-bold text-slate-900 dark:text-white">
                       {plant.name}
                     </p>
+
                     <p className="mt-0.5 truncate text-[10px] text-slate-500 dark:text-slate-400">
                       {plant.status}
                     </p>
@@ -252,7 +262,7 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Floating weather card */}
+            {/* Weather Card */}
             <div className="absolute -left-5 top-24 hidden rounded-2xl border border-white/80 bg-white/90 p-4 shadow-xl shadow-emerald-950/10 backdrop-blur-xl sm:block dark:border-white/10 dark:bg-slate-900/90">
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-500/10">
@@ -261,16 +271,17 @@ export function Hero() {
 
                 <div>
                   <p className="text-lg font-bold text-slate-900 dark:text-white">
-                    31°C
+                    ৩১°C
                   </p>
+
                   <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                    Perfect garden day
+                    বাগানের জন্য সুন্দর দিন
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Floating plant card */}
+            {/* Plant Card */}
             <div className="absolute -bottom-5 -right-4 hidden rounded-2xl border border-white/80 bg-white/90 p-4 shadow-xl shadow-emerald-950/10 backdrop-blur-xl sm:block dark:border-white/10 dark:bg-slate-900/90">
               <div className="flex items-center gap-3">
                 <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-2xl dark:bg-emerald-500/10">
@@ -279,10 +290,11 @@ export function Hero() {
 
                 <div>
                   <p className="text-sm font-bold text-slate-900 dark:text-white">
-                    New growth
+                    নতুন বৃদ্ধি
                   </p>
+
                   <p className="text-[10px] text-emerald-600 dark:text-emerald-400">
-                    Basil is thriving
+                    তুলসী গাছটি ভালো বাড়ছে
                   </p>
                 </div>
               </div>
@@ -290,30 +302,32 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Bottom feature strip */}
+        {/* Bottom Feature Strip */}
         <div className="mt-20 grid gap-4 border-t border-slate-200/80 pt-8 sm:grid-cols-3 dark:border-white/10">
           <Feature
             icon={<Leaf />}
-            title="Know every plant"
-            description="Keep all your plants organized in one place."
+            title="প্রতিটি গাছকে জানুন"
+            description="আপনার সব গাছের তথ্য একটি জায়গায় সুন্দরভাবে সংরক্ষণ করুন।"
           />
 
           <Feature
             icon={<Droplets />}
-            title="Never miss care"
-            description="Stay on top of watering and garden tasks."
+            title="পরিচর্যা ভুলবেন না"
+            description="পানি দেওয়া ও বাগানের প্রয়োজনীয় কাজের কথা মনে রাখুন।"
           />
 
           <Feature
             icon={<Sparkles />}
-            title="Grow smarter"
-            description="Turn your garden data into useful insights."
+            title="আরও স্মার্টভাবে বাগান করুন"
+            description="বাগানের তথ্য ব্যবহার করে আরও ভালোভাবে গাছের যত্ন নিন।"
           />
         </div>
       </section>
     </main>
   );
 }
+
+/* ---------------- Stat Card ---------------- */
 
 function StatCard({
   icon,
@@ -340,6 +354,8 @@ function StatCard({
     </div>
   );
 }
+
+/* ---------------- Task ---------------- */
 
 function Task({
   icon,
@@ -370,6 +386,8 @@ function Task({
     </div>
   );
 }
+
+/* ---------------- Feature ---------------- */
 
 function Feature({
   icon,
