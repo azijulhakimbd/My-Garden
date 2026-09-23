@@ -435,7 +435,7 @@ function PlantCard({
             </p>
 
             <p className="mt-1 truncate text-sm font-semibold">
-              {plant.plantDate || "যোগ করা হয়নি"}
+              {plant.plantedDate || "যোগ করা হয়নি"}
             </p>
           </div>
         </div>
@@ -587,7 +587,7 @@ function PlantDetailsModal({
           <InfoBox
             icon={<CalendarDays className="h-4 w-4" />}
             label="রোপণের তারিখ"
-            value={plant.plantDate || "যোগ করা হয়নি"}
+            value={plant.plantedDate || "যোগ করা হয়নি"}
           />
 
           <InfoBox
@@ -615,8 +615,8 @@ function PlantDetailsModal({
 
             <ModalTimeline
               title="রোপণের তারিখ"
-              date={plant.plantDate || "তারিখ যোগ করা হয়নি"}
-              description="plant.ts ফাইলে plantDate পরিবর্তন করে প্রকৃত রোপণের তারিখ যুক্ত করুন।"
+              date={plant.plantedDate || "তারিখ যোগ করা হয়নি"}
+                description="গাছটি বাগানে রোপণ করা হয়েছে।"
             />
 
             <ModalTimeline

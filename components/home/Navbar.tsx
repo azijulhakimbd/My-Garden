@@ -4,15 +4,19 @@ import Link from "next/link";
 import { Leaf, Menu, Sprout } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/mode-toggle";
 
 const navItems = [
-  { label: "Home", href: "/" },
-  { label: "My Garden", href: "/garden" },
-  { label: "Plants", href: "/plants" },
-  { label: "Tasks", href: "/tasks" },
-  { label: "Garden AI", href: "/garden-ai" },
+  { label: "হোম", href: "/" },
+  { label: "আমার বাগান", href: "/garden" },
+  { label: "গাছপালা", href: "/plants" },
+  { label: "কাজসমূহ", href: "/tasks" },
+  { label: "বাগান এআই", href: "/garden-ai" },
 ];
 
 export function Navbar() {
@@ -32,11 +36,11 @@ export function Navbar() {
 
             <div className="hidden sm:block">
               <p className="text-base font-bold tracking-tight text-slate-950 dark:text-white">
-                My Garden
+                আমার বাগান
               </p>
 
-              <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400">
-                Grow with care
+              <p className="text-[10px] font-medium tracking-[0.18em] text-emerald-600 dark:text-emerald-400">
+                যত্নে গড়ে উঠুক সবুজ
               </p>
             </div>
           </Link>
@@ -58,7 +62,7 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Actions */}
+          {/* Desktop Actions */}
           <div className="hidden items-center gap-2 md:flex">
             <ModeToggle />
 
@@ -68,7 +72,7 @@ export function Navbar() {
               className="rounded-xl"
             >
               <Link href="/login">
-                Sign in
+                লগইন
               </Link>
             </Button>
 
@@ -78,7 +82,7 @@ export function Navbar() {
             >
               <Link href="/garden">
                 <Sprout className="mr-2 size-4" />
-                Start Gardening
+                বাগান শুরু করুন
               </Link>
             </Button>
           </div>
@@ -93,7 +97,7 @@ export function Navbar() {
                   variant="ghost"
                   size="icon"
                   className="rounded-xl"
-                  aria-label="Open navigation menu"
+                  aria-label="মেনু খুলুন"
                 >
                   <Menu className="size-5" />
                 </Button>
@@ -104,6 +108,7 @@ export function Navbar() {
                 className="w-[300px] border-l border-emerald-950/10 bg-white dark:border-white/10 dark:bg-slate-950"
               >
                 <div className="mt-8 flex flex-col">
+
                   {/* Mobile Logo */}
                   <div className="mb-8 flex items-center gap-3">
                     <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-600 text-white">
@@ -112,16 +117,16 @@ export function Navbar() {
 
                     <div>
                       <p className="font-bold text-slate-950 dark:text-white">
-                        My Garden
+                        আমার বাগান
                       </p>
 
                       <p className="text-xs text-emerald-600 dark:text-emerald-400">
-                        Grow with care
+                        যত্নে গড়ে উঠুক সবুজ
                       </p>
                     </div>
                   </div>
 
-                  {/* Links */}
+                  {/* Mobile Links */}
                   <div className="flex flex-col gap-1">
                     {navItems.map((item) => (
                       <Link
@@ -134,7 +139,7 @@ export function Navbar() {
                     ))}
                   </div>
 
-                  {/* Mobile CTA */}
+                  {/* Mobile Actions */}
                   <div className="mt-8 flex flex-col gap-2">
                     <Button
                       variant="outline"
@@ -142,7 +147,7 @@ export function Navbar() {
                       className="rounded-xl"
                     >
                       <Link href="/login">
-                        Sign in
+                        লগইন
                       </Link>
                     </Button>
 
@@ -152,7 +157,7 @@ export function Navbar() {
                     >
                       <Link href="/garden">
                         <Sprout className="mr-2 size-4" />
-                        Start Gardening
+                        বাগান শুরু করুন
                       </Link>
                     </Button>
                   </div>
