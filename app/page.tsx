@@ -1,10 +1,9 @@
-
+import { Hero } from "@/components/home/Hero";
 
 export default function Home() {
   return (
-    <>
-      <h1>Welcome to My Garden</h1>
-      <p>This is a simple Next.js app.</p>
-    </>
+    <div className="flex min-h-screen flex-col items-center justify-between p-24">
+      <Hero />
+    </div>
   );
 }

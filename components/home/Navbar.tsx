@@ -1,0 +1,167 @@
+"use client";
+
+import Link from "next/link";
+import { Leaf, Menu, Sprout } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ModeToggle } from "@/components/mode-toggle";
+
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "My Garden", href: "/garden" },
+  { label: "Plants", href: "/plants" },
+  { label: "Tasks", href: "/tasks" },
+  { label: "Garden AI", href: "/garden-ai" },
+];
+
+export function Navbar() {
+  return (
+    <header className="fixed inset-x-0 top-0 z-50">
+      <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+        <nav className="flex h-16 items-center justify-between rounded-2xl border border-emerald-950/10 bg-white/80 px-4 shadow-lg shadow-emerald-950/5 backdrop-blur-xl transition-colors dark:border-white/10 dark:bg-slate-950/75 sm:px-6">
+
+          {/* Logo */}
+          <Link
+            href="/"
+            className="group flex items-center gap-2.5"
+          >
+            <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 transition-transform duration-300 group-hover:scale-105">
+              <Leaf className="size-5" />
+            </span>
+
+            <div className="hidden sm:block">
+              <p className="text-base font-bold tracking-tight text-slate-950 dark:text-white">
+                My Garden
+              </p>
+
+              <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400">
+                Grow with care
+              </p>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden items-center gap-1 md:flex">
+            {navItems.map((item, index) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  index === 0
+                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="hidden items-center gap-2 md:flex">
+            <ModeToggle />
+
+            <Button
+              variant="ghost"
+              asChild
+              className="rounded-xl"
+            >
+              <Link href="/login">
+                Sign in
+              </Link>
+            </Button>
+
+            <Button
+              asChild
+              className="rounded-xl bg-emerald-600 px-5 text-white shadow-lg shadow-emerald-600/10 hover:bg-emerald-700"
+            >
+              <Link href="/garden">
+                <Sprout className="mr-2 size-4" />
+                Start Gardening
+              </Link>
+            </Button>
+          </div>
+
+          {/* Mobile */}
+          <div className="flex items-center gap-2 md:hidden">
+            <ModeToggle />
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-xl"
+                  aria-label="Open navigation menu"
+                >
+                  <Menu className="size-5" />
+                </Button>
+              </SheetTrigger>
+
+              <SheetContent
+                side="right"
+                className="w-[300px] border-l border-emerald-950/10 bg-white dark:border-white/10 dark:bg-slate-950"
+              >
+                <div className="mt-8 flex flex-col">
+                  {/* Mobile Logo */}
+                  <div className="mb-8 flex items-center gap-3">
+                    <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-600 text-white">
+                      <Leaf className="size-5" />
+                    </span>
+
+                    <div>
+                      <p className="font-bold text-slate-950 dark:text-white">
+                        My Garden
+                      </p>
+
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                        Grow with care
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Links */}
+                  <div className="flex flex-col gap-1">
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="rounded-xl px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-300 dark:hover:bg-emerald-500/10 dark:hover:text-emerald-400"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Mobile CTA */}
+                  <div className="mt-8 flex flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      asChild
+                      className="rounded-xl"
+                    >
+                      <Link href="/login">
+                        Sign in
+                      </Link>
+                    </Button>
+
+                    <Button
+                      asChild
+                      className="rounded-xl bg-emerald-600 hover:bg-emerald-700"
+                    >
+                      <Link href="/garden">
+                        <Sprout className="mr-2 size-4" />
+                        Start Gardening
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </nav>
+      </div>
+    </header>
+  );
+}
