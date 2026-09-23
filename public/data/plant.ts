@@ -1,28 +1,28 @@
-// src/data/plant.ts
+export type PlantCategory =
+  | "ফলজ"
+  | "সাইট্রাস"
+  | "ঔষধি"
+  | "মসলা"
+  | "আম"
+  | "ফুল";
 
 export type PlantStatus =
-  | "Healthy"
-  | "Needs attention"
-  | "Growing"
-  | "Flowering"
-  | "Fruiting";
-
-export type GrowthStage =
-  | "Seedling"
-  | "Young"
-  | "Growing"
-  | "Mature"
-  | "Flowering"
-  | "Fruiting";
+  | "ফল হয়েছে"
+  | "ফল হয়নি"
+  | "ফুল হয়েছে"
+  | "গাছ ছোট"
+  | "গাছ মরে গেছে"
+  | "ফুল এসেছে"
+  | "ফল হয়েছে ও ফুল হয়েছে"
+  | "গাছ ছোট ও ফল হয়নি"
+  | "গাছ ছোট ও ফুল হয়েছে";
 
 export type TimelineEventType =
   | "planted"
   | "growth"
   | "flowering"
   | "fruiting"
-  | "watering"
-  | "care"
-  | "harvest"
+  | "purchase"
   | "note";
 
 export interface PlantTimelineEvent {
@@ -37,32 +37,118 @@ export interface Plant {
   id: number;
   name: string;
   quantity: number;
-  category: string;
+  category: PlantCategory;
 
+  /**
+   * ব্যবহারকারীর দেওয়া রোপণের তারিখ/সাল
+   */
+  plantedDate: string;
+
+  /**
+   * ব্যবহারকারীর দেওয়া দাম
+   */
+  price?: number;
+
+  /**
+   * ফল/ফুল/বর্তমান অবস্থা
+   */
+  result?: string;
+
+  /**
+   * নার্সারি বা উৎস
+   */
+  nursery?: string;
+
+  /**
+   * অতিরিক্ত তথ্য
+   */
   note?: string;
-  scientificName?: string;
+
+  /**
+   * জাত/ভ্যারাইটি
+   */
   variety?: string;
 
-  plantedDate: string;
-  age: string;
-  location: string;
-
-  health: number;
-  status: PlantStatus;
-  growthStage: GrowthStage;
-
-  watering: string;
-  nextWatering: string;
-  sunlight: string;
-
-  soil?: string;
-  fertilizer?: string;
-
+  /**
+   * UI-এর জন্য icon
+   */
   icon: string;
-  image: string;
 
+  /**
+   * ছবি থাকলে এখানে path দিন।
+   * যেমন: /images/plants/lichu.jpg
+   */
+  image?: string;
+
+  /**
+   * Timeline
+   */
   timeline: PlantTimelineEvent[];
 }
+
+/* ---------------------------------------------------------
+   Helper
+--------------------------------------------------------- */
+
+function createTimeline(
+  id: number,
+  plantedDate: string,
+  name: string,
+  result?: string,
+): PlantTimelineEvent[] {
+  const events: PlantTimelineEvent[] = [
+    {
+      id: 1,
+      date: plantedDate,
+      title: "রোপণ / সংগ্রহ",
+      description: `${name} গাছটি ${plantedDate}-এ রোপণ বা সংগ্রহ করা হয়েছে।`,
+      type: "planted",
+    },
+  ];
+
+  if (result) {
+    const normalized = result.toLowerCase();
+
+    if (result.includes("ফুল")) {
+      events.push({
+        id: events.length + 1,
+        date: "বর্তমান",
+        title: "ফুলের তথ্য",
+        description: `${name}: ${result}`,
+        type: "flowering",
+      });
+    }
+
+    if (result.includes("ফল")) {
+      events.push({
+        id: events.length + 1,
+        date: "বর্তমান",
+        title: "ফলের তথ্য",
+        description: `${name}: ${result}`,
+        type: "fruiting",
+      });
+    }
+
+    if (
+      normalized.includes("ছোট") ||
+      normalized.includes("মরে গেছে")
+    ) {
+      events.push({
+        id: events.length + 1,
+        date: "বর্তমান",
+        title: "বর্তমান অবস্থা",
+        description: `${name}: ${result}`,
+        type: "note",
+      });
+    }
+  }
+
+  return events;
+}
+
+/* ---------------------------------------------------------
+   Plant Data
+--------------------------------------------------------- */
 
 export const plants: Plant[] = [
   {
@@ -70,29 +156,11 @@ export const plants: Plant[] = [
     name: "লিচু",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Litchi chinensis",
-    plantedDate: "2008-07-15",
-    age: "১৮ বছর",
-    location: "বাগান",
-    health: 94,
-    status: "Healthy",
-    growthStage: "Mature",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
-    soil: "দোআঁশ মাটি",
-    fertilizer: "জৈব সার",
-    icon: "🌳",
+    plantedDate: "২০০৮",
+    result: "ফল হয়েছে",
+    icon: "🍒",
     image: "/images/plants/lichu.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2008-07-15",
-        title: "গাছ রোপণ",
-        description: "লিচু গাছটি বাগানে রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(1, "২০০৮", "লিচু", "ফল হয়েছে"),
   },
 
   {
@@ -100,60 +168,28 @@ export const plants: Plant[] = [
     name: "নারিকেল",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Cocos nucifera",
-    plantedDate: "2009-06-10",
-    age: "১৫ বছর",
-    location: "বাগানের পূর্ব পাশে",
-    health: 96,
-    status: "Healthy",
-    growthStage: "Mature",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
-    soil: "বেলে দোআঁশ",
-    fertilizer: "জৈব সার",
-    icon: "🌴",
+    plantedDate: "২০০৮",
+    result: "চারা লাগানো, ফল হয়েছে",
+    icon: "🥥",
     image: "/images/plants/coconut.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2009-06-10",
-        title: "চারা রোপণ",
-        description: "নারিকেল চারা বাগানে রোপণ করা হয়।",
-        type: "planted",
-      },
-     
-    ],
+    timeline: createTimeline(
+      2,
+      "২০০৮",
+      "নারিকেল",
+      "চারা লাগানো, ফল হয়েছে",
+    ),
   },
 
   {
     id: 3,
     name: "আম",
     quantity: 8,
-    category: "ফলজ",
-    scientificName: "Mangifera indica",
-    plantedDate: "2026-07-01",
-    age: "০ বছর",
-    location: "আম বাগান",
-    health: 95,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৫ দিন",
-    nextWatering: "৩ দিন পর",
-    sunlight: "পূর্ণ রোদ",
-    soil: "দোআঁশ মাটি",
-    fertilizer: "গোবর ও জৈব সার",
+    category: "আম",
+    plantedDate: "২০০৮",
+    result: "ফল হয়েছে",
     icon: "🥭",
     image: "/images/plants/mango.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2026-07-01",
-        title: "চারা রোপণ",
-        description: "আমের চারা বাগানে রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(3, "২০০৮", "আম", "ফল হয়েছে"),
   },
 
   {
@@ -161,27 +197,16 @@ export const plants: Plant[] = [
     name: "কাঁঠাল",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Artocarpus heterophyllus",
-    plantedDate: "2008-05-18",
-    age: "১৮ বছর",
-    location: "বাগানের উত্তর পাশে",
-    health: 93,
-    status: "Healthy",
-    growthStage: "Mature",
-    watering: "প্রতি ৫ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
-    icon: "🌳",
+    plantedDate: "২০০৮",
+    result: "চারা লাগানো, ফল হয়েছে",
+    icon: "🍈",
     image: "/images/plants/jackfruit.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2008-05-18",
-        title: "রোপণ",
-        description: "কাঁঠাল গাছটি বাগানে রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      4,
+      "২০০৮",
+      "কাঁঠাল",
+      "চারা লাগানো, ফল হয়েছে",
+    ),
   },
 
   {
@@ -189,34 +214,11 @@ export const plants: Plant[] = [
     name: "চালতা",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Dillenia indica",
-    plantedDate: "2023-06-12",
-    age: "৩ বছর",
-    location: "বাগান",
-    health: 91,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০১০",
+    result: "ফল হয়েছে",
     icon: "🌳",
     image: "/images/plants/chalta.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-06-12",
-        title: "রোপণ",
-        description: "চালতা গাছটি রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2025-06-20",
-        title: "নতুন বৃদ্ধি",
-        description: "গাছের নতুন শাখা ও পাতা বৃদ্ধি পেয়েছে।",
-        type: "growth",
-      },
-    ],
+    timeline: createTimeline(5, "২০১০", "চালতা", "ফল হয়েছে"),
   },
 
   {
@@ -224,34 +226,16 @@ export const plants: Plant[] = [
     name: "তাল গাছ",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Borassus flabellifer",
-    plantedDate: "2020-06-01",
-    age: "৬ বছর",
-    location: "বাগানের দক্ষিণ পাশে",
-    health: 97,
-    status: "Healthy",
-    growthStage: "Mature",
-    watering: "প্রতি ৭ দিন",
-    nextWatering: "৪ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০১৩",
+    result: "ফল হয়নি, গাছ ছোট",
     icon: "🌴",
     image: "/images/plants/tal.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2020-06-01",
-        title: "রোপণ",
-        description: "তাল গাছটি রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2024-08-10",
-        title: "উল্লেখযোগ্য বৃদ্ধি",
-        description: "গাছটি উল্লেখযোগ্য উচ্চতায় পৌঁছেছে।",
-        type: "growth",
-      },
-    ],
+    timeline: createTimeline(
+      6,
+      "২০১৩",
+      "তাল গাছ",
+      "ফল হয়নি, গাছ ছোট",
+    ),
   },
 
   {
@@ -259,34 +243,16 @@ export const plants: Plant[] = [
     name: "খেজুর",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Phoenix dactylifera",
-    plantedDate: "2023-05-10",
-    age: "৩ বছর",
-    location: "বাগান",
-    health: 92,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৬ দিন",
-    nextWatering: "৩ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০১৫",
+    result: "বীজ থেকে হয়েছে, ফল হয়েছে",
     icon: "🌴",
     image: "/images/plants/date.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-05-10",
-        title: "রোপণ",
-        description: "খেজুর গাছের চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2025-06-18",
-        title: "নতুন পাতা",
-        description: "গাছে নতুন পাতা বৃদ্ধি পেয়েছে।",
-        type: "growth",
-      },
-    ],
+    timeline: createTimeline(
+      7,
+      "২০১৫",
+      "খেজুর",
+      "বীজ থেকে হয়েছে, ফল হয়েছে",
+    ),
   },
 
   {
@@ -294,34 +260,16 @@ export const plants: Plant[] = [
     name: "কলা",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Musa",
-    plantedDate: "2026-01-15",
-    age: "৮ মাস",
-    location: "বাগান",
-    health: 95,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ২ দিন",
-    nextWatering: "আজ",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০১৬",
+    result: "চারা লাগানো, ফল হয়েছে",
     icon: "🍌",
     image: "/images/plants/banana.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2026-01-15",
-        title: "রোপণ",
-        description: "কলার চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-05-20",
-        title: "দ্রুত বৃদ্ধি",
-        description: "গাছটি দ্রুত বৃদ্ধি পাচ্ছে।",
-        type: "growth",
-      },
-    ],
+    timeline: createTimeline(
+      8,
+      "২০১৬",
+      "কলা",
+      "চারা লাগানো, ফল হয়েছে",
+    ),
   },
 
   {
@@ -329,27 +277,12 @@ export const plants: Plant[] = [
     name: "আমড়া",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Spondias pinnata",
-    plantedDate: "2023-07-20",
-    age: "৩ বছর",
-    location: "বাগান",
-    health: 90,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২১",
+    price: 50,
+    result: "ফল হয়েছে",
     icon: "🌳",
     image: "/images/plants/amra.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-07-20",
-        title: "রোপণ",
-        description: "আমড়া গাছটি রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(9, "২০২১", "আমড়া", "ফল হয়েছে"),
   },
 
   {
@@ -357,27 +290,16 @@ export const plants: Plant[] = [
     name: "বেল",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Aegle marmelos",
-    plantedDate: "2022-07-05",
-    age: "৪ বছর",
-    location: "বাগান",
-    health: 94,
-    status: "Healthy",
-    growthStage: "Mature",
-    watering: "প্রতি ৭ দিন",
-    nextWatering: "৪ দিন পর",
-    sunlight: "পূর্ণ রোদ",
-    icon: "🌳",
+    plantedDate: "২০২২",
+    result: "বীজ থেকে হয়েছে, ফল হয়নি",
+    icon: "🍈",
     image: "/images/plants/bel.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2022-07-05",
-        title: "রোপণ",
-        description: "বেল গাছটি রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      10,
+      "২০২২",
+      "বেল",
+      "বীজ থেকে হয়েছে, ফল হয়নি",
+    ),
   },
 
   {
@@ -385,27 +307,18 @@ export const plants: Plant[] = [
     name: "কাঠ বাদাম",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Terminalia catappa",
-    plantedDate: "2022-06-20",
-    age: "৪ বছর",
-    location: "বাগানের পাশে",
-    health: 93,
-    status: "Healthy",
-    growthStage: "Mature",
-    watering: "প্রতি ৬ দিন",
-    nextWatering: "৩ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২২ আগস্ট ২০২২",
+    price: 125,
+    result: "ফুল এসেছে কিন্তু ফল হয় নি",
+    nursery: "শাহিন নার্সারি",
     icon: "🌳",
     image: "/images/plants/kat-badam.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2022-06-20",
-        title: "রোপণ",
-        description: "কাঠ বাদাম গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      11,
+      "২২ আগস্ট ২০২২",
+      "কাঠ বাদাম",
+      "ফুল এসেছে কিন্তু ফল হয় নি",
+    ),
   },
 
   {
@@ -413,26 +326,17 @@ export const plants: Plant[] = [
     name: "অরবরই",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-02-15",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 91,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
-    icon: "🌳",
+    plantedDate: "সেপ্টেম্বর ২০২২",
+    price: 50,
+    result: "ফল হয়নি",
+    icon: "🌿",
     image: "/images/plants/arboroi.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-02-15",
-        title: "রোপণ",
-        description: "অরবরই গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      12,
+      "সেপ্টেম্বর ২০২২",
+      "অরবরই",
+      "ফল হয়নি",
+    ),
   },
 
   {
@@ -440,41 +344,17 @@ export const plants: Plant[] = [
     name: "কাগছি লেবু",
     quantity: 1,
     category: "সাইট্রাস",
-    scientificName: "Citrus limon",
-    plantedDate: "2024-03-10",
-    age: "২ বছর",
-    location: "লেবু বাগান",
-    health: 94,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৩",
+    price: 20,
+    result: "ফল হয়েছে",
     icon: "🍋",
     image: "/images/plants/lemon.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-03-10",
-        title: "রোপণ",
-        description: "কাগছি লেবুর চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-03-10",
-        title: "ফুল",
-        description: "গাছে ফুলের কুঁড়ি দেখা গেছে।",
-        type: "flowering",
-      },
-      {
-        id: 3,
-        date: "2026-07-20",
-        title: "ফল",
-        description: "গাছে লেবু ধরেছে।",
-        type: "fruiting",
-      },
-    ],
+    timeline: createTimeline(
+      13,
+      "২০২৩",
+      "কাগছি লেবু",
+      "ফল হয়েছে",
+    ),
   },
 
   {
@@ -482,26 +362,17 @@ export const plants: Plant[] = [
     name: "বল সুন্দরী",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-01-10",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 90,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৪",
+    price: 60,
+    result: "ফল হয়েছে",
     icon: "🌳",
     image: "/images/plants/bol-sundori.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-01-10",
-        title: "রোপণ",
-        description: "বল সুন্দরী গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      14,
+      "২০২৪",
+      "বল সুন্দরী",
+      "ফল হয়েছে",
+    ),
   },
 
   {
@@ -509,41 +380,18 @@ export const plants: Plant[] = [
     name: "পেঁপে",
     quantity: 2,
     category: "ফলজ",
-    scientificName: "Carica papaya",
-    plantedDate: "2025-06-15",
-    age: "১ বছর",
-    location: "সবজি ও ফলের বাগান",
-    health: 95,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ২ দিন",
-    nextWatering: "আজ",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৫",
+    price: 30,
+    result: "ফল হয়েছে",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🥭",
     image: "/images/plants/papaya.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2025-06-15",
-        title: "রোপণ",
-        description: "পেঁপের চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-03-12",
-        title: "ফুল",
-        description: "গাছে ফুল এসেছে।",
-        type: "flowering",
-      },
-      {
-        id: 3,
-        date: "2026-05-20",
-        title: "ফল ধরেছে",
-        description: "গাছে পেঁপে ধরতে শুরু করেছে।",
-        type: "fruiting",
-      },
-    ],
+    timeline: createTimeline(
+      15,
+      "২০২৫",
+      "পেঁপে",
+      "ফল হয়েছে",
+    ),
   },
 
   {
@@ -551,34 +399,18 @@ export const plants: Plant[] = [
     name: "নিম",
     quantity: 1,
     category: "ঔষধি",
-    scientificName: "Azadirachta indica",
-    plantedDate: "2021-06-10",
-    age: "৫ বছর",
-    location: "বাগানের পশ্চিম পাশে",
-    health: 98,
-    status: "Healthy",
-    growthStage: "Mature",
-    watering: "প্রতি ৭ দিন",
-    nextWatering: "৪ দিন পর",
-    sunlight: "পূর্ণ রোদ",
-    icon: "🌳",
+    plantedDate: "২০২৫",
+    price: 40,
+    result: "গাছ ছোট",
+    nursery: "স্মৃতি নার্সারি, বনকালী",
+    icon: "🌿",
     image: "/images/plants/neem.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2021-06-10",
-        title: "রোপণ",
-        description: "ঔষধি গুণসম্পন্ন নিম গাছটি রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2025-06-15",
-        title: "পরিপক্বতা",
-        description: "গাছটি বড় হয়ে ছায়া দিতে শুরু করেছে।",
-        type: "growth",
-      },
-    ],
+    timeline: createTimeline(
+      16,
+      "২০২৫",
+      "নিম",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -586,26 +418,19 @@ export const plants: Plant[] = [
     name: "বিনা ১ লেবু",
     quantity: 2,
     category: "সাইট্রাস",
-    plantedDate: "2025-02-10",
-    age: "১ বছর",
-    location: "লেবু বাগান",
-    health: 93,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৫",
+    price: 0,
+    result: "ফল হয়নি, গাছ ছোট",
+    nursery: "বিনা, নালিতাবাড়ী উপকেন্দ্র",
+    note: "বিনা ১ লেবুর চারা বিনামূল্যে সংগ্রহ করা হয়েছে।",
     icon: "🍋",
     image: "/images/plants/bina-lemon.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2025-02-10",
-        title: "রোপণ",
-        description: "বিনা-১ লেবুর চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      17,
+      "২০২৫",
+      "বিনা ১ লেবু",
+      "ফল হয়নি, গাছ ছোট",
+    ),
   },
 
   {
@@ -613,27 +438,17 @@ export const plants: Plant[] = [
     name: "আতাফল",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Annona squamosa",
-    plantedDate: "2024-06-10",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 92,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৫",
+    price: 50,
+    result: "গাছ মরে গেছে",
     icon: "🌳",
     image: "/images/plants/ata.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-06-10",
-        title: "রোপণ",
-        description: "আতাফল গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      18,
+      "২০২৫",
+      "আতাফল",
+      "গাছ মরে গেছে",
+    ),
   },
 
   {
@@ -641,27 +456,17 @@ export const plants: Plant[] = [
     name: "লটকন",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Baccaurea ramiflora",
-    plantedDate: "2023-07-10",
-    age: "৩ বছর",
-    location: "বাগান",
-    health: 91,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "আংশিক রোদ",
+    plantedDate: "বৃক্ষ মেলা ২০২৫, শেরপুর",
+    price: 60,
+    result: "গাছ ছোট, গাছ মরে গেছে",
     icon: "🌳",
     image: "/images/plants/lotkon.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-07-10",
-        title: "রোপণ",
-        description: "লটকন গাছটি বাগানে রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      19,
+      "বৃক্ষ মেলা ২০২৫, শেরপুর",
+      "লটকন",
+      "গাছ ছোট, গাছ মরে গেছে",
+    ),
   },
 
   {
@@ -669,27 +474,17 @@ export const plants: Plant[] = [
     name: "করমচা",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Carissa carandas",
-    plantedDate: "2024-03-15",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 92,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "বৃক্ষ মেলা ২০২৫, শেরপুর",
+    price: 50,
+    result: "গাছ ছোট, ফল হয়নি",
     icon: "🌿",
     image: "/images/plants/koromcha.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-03-15",
-        title: "রোপণ",
-        description: "করমচা গাছটি রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      20,
+      "বৃক্ষ মেলা ২০২৫, শেরপুর",
+      "করমচা",
+      "গাছ ছোট, ফল হয়নি",
+    ),
   },
 
   {
@@ -697,27 +492,17 @@ export const plants: Plant[] = [
     name: "তেজপাতা",
     quantity: 1,
     category: "মসলা",
-    scientificName: "Cinnamomum tamala",
-    plantedDate: "2023-05-20",
-    age: "৩ বছর",
-    location: "মসলা বাগান",
-    health: 94,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৫ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "আংশিক রোদ",
+    plantedDate: "বৃক্ষ মেলা ২০২৫, শেরপুর",
+    price: 40,
+    result: "গাছ ছোট",
     icon: "🌿",
     image: "/images/plants/tej-pata.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-05-20",
-        title: "রোপণ",
-        description: "তেজপাতার গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      21,
+      "বৃক্ষ মেলা ২০২৫, শেরপুর",
+      "তেজপাতা",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -725,41 +510,17 @@ export const plants: Plant[] = [
     name: "আনার",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Punica granatum",
-    plantedDate: "2024-02-20",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 93,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "সেপ্টেম্বর ২০২৫",
+    price: 230,
+    result: "ফল হয়েছে",
     icon: "🍎",
     image: "/images/plants/pomegranate.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-02-20",
-        title: "রোপণ",
-        description: "আনার গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-04-15",
-        title: "ফুল",
-        description: "গাছে ফুল দেখা যায়।",
-        type: "flowering",
-      },
-      {
-        id: 3,
-        date: "2026-06-20",
-        title: "ফল",
-        description: "গাছে আনার ধরেছে।",
-        type: "fruiting",
-      },
-    ],
+    timeline: createTimeline(
+      22,
+      "সেপ্টেম্বর ২০২৫",
+      "আনার",
+      "ফল হয়েছে",
+    ),
   },
 
   {
@@ -767,26 +528,18 @@ export const plants: Plant[] = [
     name: "অ্যাপল বরই",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-01-20",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 91,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "সেপ্টেম্বর ২০২৫",
+    price: 230,
+    result: "গাছ ছোট, ফল হয়নি",
+    note: "মূল তালিকায় দাম 'ঐ' হিসেবে দেওয়া ছিল।",
     icon: "🍏",
     image: "/images/plants/apple-boroi.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-01-20",
-        title: "রোপণ",
-        description: "অ্যাপল বরই গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      23,
+      "সেপ্টেম্বর ২০২৫",
+      "অ্যাপল বরই",
+      "গাছ ছোট, ফল হয়নি",
+    ),
   },
 
   {
@@ -794,34 +547,18 @@ export const plants: Plant[] = [
     name: "পেয়ারা",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Psidium guajava",
-    plantedDate: "2023-06-20",
-    age: "৩ বছর",
-    location: "বাগান",
-    health: 94,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "সেপ্টেম্বর ২০২৫",
+    price: 230,
+    result: "ফল হয়েছে",
+    note: "মূল তালিকায় দাম 'ঐ' হিসেবে দেওয়া ছিল।",
     icon: "🍐",
     image: "/images/plants/guava.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-06-20",
-        title: "রোপণ",
-        description: "পেয়ারার চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-04-10",
-        title: "ফুল",
-        description: "গাছে ফুল এসেছে।",
-        type: "flowering",
-      },
-    ],
+    timeline: createTimeline(
+      24,
+      "সেপ্টেম্বর ২০২৫",
+      "পেয়ারা",
+      "ফল হয়েছে",
+    ),
   },
 
   {
@@ -829,26 +566,18 @@ export const plants: Plant[] = [
     name: "খয়েরি পেয়ারা",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-03-20",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 93,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "সেপ্টেম্বর ২০২৫",
+    price: 230,
+    result: "ফল হয়েছে",
+    note: "মূল তালিকায় দাম 'ঐ' হিসেবে দেওয়া ছিল।",
     icon: "🍐",
     image: "/images/plants/brown-guava.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-03-20",
-        title: "রোপণ",
-        description: "খয়েরি পেয়ারা গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      25,
+      "সেপ্টেম্বর ২০২৫",
+      "খয়েরি পেয়ারা",
+      "ফল হয়েছে",
+    ),
   },
 
   {
@@ -856,42 +585,19 @@ export const plants: Plant[] = [
     name: "হিম সাগর আম",
     quantity: 1,
     category: "আম",
-    scientificName: "Mangifera indica",
+    plantedDate: "অক্টোবর ২০২৫",
+    price: 100,
+    result: "ফল হয়নি",
+    nursery: "চান মিয়া, গোজাকুড়া",
     variety: "হিম সাগর",
-    plantedDate: "2022-07-15",
-    age: "৪ বছর",
-    location: "আম বাগান",
-    health: 96,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৫ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
     icon: "🥭",
     image: "/images/plants/himsagar.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2022-07-15",
-        title: "রোপণ",
-        description: "হিম সাগর আমের গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2025-02-20",
-        title: "মুকুল",
-        description: "গাছে মুকুল আসে।",
-        type: "flowering",
-      },
-      {
-        id: 3,
-        date: "2025-05-25",
-        title: "আম ধরেছে",
-        description: "গাছে হিম সাগর আম ধরেছে।",
-        type: "fruiting",
-      },
-    ],
+    timeline: createTimeline(
+      26,
+      "অক্টোবর ২০২৫",
+      "হিম সাগর আম",
+      "ফল হয়নি",
+    ),
   },
 
   {
@@ -899,33 +605,17 @@ export const plants: Plant[] = [
     name: "বারি ১ মাল্টা",
     quantity: 1,
     category: "সাইট্রাস",
-    plantedDate: "2024-02-15",
-    age: "২ বছর",
-    location: "সাইট্রাস বাগান",
-    health: 95,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৬",
+    price: 110,
+    result: "ফল হয়নি",
     icon: "🍊",
-    image: "/images/plants/malta.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-02-15",
-        title: "রোপণ",
-        description: "বারি-১ মাল্টার চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-05-15",
-        title: "ফল",
-        description: "গাছে মাল্টা ধরেছে।",
-        type: "fruiting",
-      },
-    ],
+    image: "https://i.postimg.cc/P5S0y7z2/IMG-20260913-134741-350-jpg.jpg",
+    timeline: createTimeline(
+      27,
+      "২০২৬",
+      "বারি ১ মাল্টা",
+      "ফল হয়নি",
+    ),
   },
 
   {
@@ -933,26 +623,18 @@ export const plants: Plant[] = [
     name: "থাই সফেদা",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-04-10",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 92,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৬",
+    price: 150,
+    result: "ফল হয়েছে",
+    nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
     icon: "🌳",
     image: "/images/plants/thai-safeda.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-04-10",
-        title: "রোপণ",
-        description: "থাই সফেদার চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      28,
+      "২০২৬",
+      "থাই সফেদা",
+      "ফল হয়েছে",
+    ),
   },
 
   {
@@ -960,34 +642,18 @@ export const plants: Plant[] = [
     name: "আঙ্গুর",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Vitis vinifera",
-    plantedDate: "2024-01-15",
-    age: "২ বছর",
-    location: "মাচা বাগান",
-    health: 91,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২০২৬",
+    price: 100,
+    result: "গাছ মরে গেছে",
+    nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🍇",
     image: "/images/plants/grape.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-01-15",
-        title: "রোপণ",
-        description: "আঙ্গুরের লতা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-03-20",
-        title: "লতা বৃদ্ধি",
-        description: "আঙ্গুরের লতা মাচায় ছড়িয়ে পড়েছে।",
-        type: "growth",
-      },
-    ],
+    timeline: createTimeline(
+      29,
+      "২০২৬",
+      "আঙ্গুর",
+      "গাছ মরে গেছে",
+    ),
   },
 
   {
@@ -995,28 +661,19 @@ export const plants: Plant[] = [
     name: "কাটিমন আম",
     quantity: 1,
     category: "আম",
-    scientificName: "Mangifera indica",
+    plantedDate: "জুন ২০২৬",
+    price: 100,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     variety: "কাটিমন",
-    plantedDate: "2024-05-10",
-    age: "২ বছর",
-    location: "আম বাগান",
-    health: 95,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
     icon: "🥭",
     image: "/images/plants/katimon.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-05-10",
-        title: "রোপণ",
-        description: "কাটিমন আমের চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      30,
+      "জুন ২০২৬",
+      "কাটিমন আম",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1024,26 +681,18 @@ export const plants: Plant[] = [
     name: "কদ বেল",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-06-20",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 92,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৫ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
-    icon: "🌳",
+    plantedDate: "জুন ২০২৬",
+    price: 100,
+    result: "গাছ ছোট",
+    nursery: "স্মৃতি নার্সারি, বনকালী",
+    icon: "🍈",
     image: "/images/plants/kod-bel.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-06-20",
-        title: "রোপণ",
-        description: "কদ বেল গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      31,
+      "জুন ২০২৬",
+      "কদ বেল",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1051,26 +700,18 @@ export const plants: Plant[] = [
     name: "গোলাপজাম",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2023-08-10",
-    age: "৩ বছর",
-    location: "বাগান",
-    health: 94,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "জুন ২০২৬",
+    price: 100,
+    result: "গাছ ছোট",
+    nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🌳",
     image: "/images/plants/golap-jam.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-08-10",
-        title: "রোপণ",
-        description: "গোলাপজাম গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      32,
+      "জুন ২০২৬",
+      "গোলাপজাম",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1078,33 +719,18 @@ export const plants: Plant[] = [
     name: "চাইনা পেয়ারা",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-02-12",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 94,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "১৭ জুলাই ২০২৬",
+    price: 50,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍐",
     image: "/images/plants/china-guava.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-02-12",
-        title: "রোপণ",
-        description: "চাইনা পেয়ারার চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-05-10",
-        title: "ফল ধরেছে",
-        description: "গাছে পেয়ারা ধরেছে।",
-        type: "fruiting",
-      },
-    ],
+    timeline: createTimeline(
+      33,
+      "১৭ জুলাই ২০২৬",
+      "চাইনা পেয়ারা",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1112,27 +738,18 @@ export const plants: Plant[] = [
     name: "শরিফা",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Annona squamosa",
-    plantedDate: "2024-04-15",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 92,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২৮ জুলাই ২০২৬",
+    price: 120,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
     image: "/images/plants/sharifa.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-04-15",
-        title: "রোপণ",
-        description: "শরিফা গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      34,
+      "২৮ জুলাই ২০২৬",
+      "শরিফা",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1140,33 +757,18 @@ export const plants: Plant[] = [
     name: "ভিয়েতনামি মাল্টা বারোমাসি",
     quantity: 1,
     category: "সাইট্রাস",
-    plantedDate: "2024-03-05",
-    age: "২ বছর",
-    location: "সাইট্রাস বাগান",
-    health: 95,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "১০ আগস্ট ২০২৬",
+    price: 170,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍊",
-    image: "/images/plants/vietnam-malta.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-03-05",
-        title: "রোপণ",
-        description: "ভিয়েতনামি মাল্টার চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-06-15",
-        title: "ফল ধরেছে",
-        description: "গাছে বারোমাসি মাল্টা ধরেছে।",
-        type: "fruiting",
-      },
-    ],
+    image: "https://i.postimg.cc/XYjTwWFm/IMG-20260913-134744-942-jpg.jpg",
+    timeline: createTimeline(
+      35,
+      "১০ আগস্ট ২০২৬",
+      "ভিয়েতনামি মাল্টা বারোমাসি",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1174,34 +776,18 @@ export const plants: Plant[] = [
     name: "টগর",
     quantity: 1,
     category: "ফুল",
-    scientificName: "Tabernaemontana divaricata",
-    plantedDate: "2025-02-15",
-    age: "১ বছর",
-    location: "ফুলের বাগান",
-    health: 96,
-    status: "Flowering",
-    growthStage: "Flowering",
-    watering: "প্রতি ২ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "আংশিক রোদ",
+    plantedDate: "১০ আগস্ট ২০২৬",
+    price: 30,
+    result: "গাছ ছোট, ফুল হয়েছে",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌼",
-    image: "/images/plants/togor.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2025-02-15",
-        title: "রোপণ",
-        description: "টগর ফুলের গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-04-20",
-        title: "ফুল ফুটেছে",
-        description: "টগর গাছে সাদা ফুল ফুটেছে।",
-        type: "flowering",
-      },
-    ],
+    image: "https://i.postimg.cc/kgTLsHv7/IMG-20260913-134708-324-jpg.jpg",
+    timeline: createTimeline(
+      36,
+      "১০ আগস্ট ২০২৬",
+      "টগর",
+      "গাছ ছোট, ফুল হয়েছে",
+    ),
   },
 
   {
@@ -1209,26 +795,17 @@ export const plants: Plant[] = [
     name: "গুটি কলম লটকন",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2024-03-25",
-    age: "২ বছর",
-    location: "বাগান",
-    health: 91,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "আংশিক রোদ",
+    plantedDate: "২২ আগস্ট ২০২৬",
+    price: 100,
+    result: "গাছ ছোট",
     icon: "🌳",
     image: "/images/plants/guti-lotkon.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-03-25",
-        title: "রোপণ",
-        description: "গুটি কলম লটকনের চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      37,
+      "২২ আগস্ট ২০২৬",
+      "গুটি কলম লটকন",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1236,35 +813,18 @@ export const plants: Plant[] = [
     name: "লংগন",
     quantity: 2,
     category: "ফলজ",
-    note: "ফুল",
-    scientificName: "Dimocarpus longan",
-    plantedDate: "2023-06-10",
-    age: "৩ বছর",
-    location: "ফল বাগান",
-    health: 94,
-    status: "Flowering",
-    growthStage: "Flowering",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২২ আগস্ট ২০২৬",
+    price: 60,
+    result: "গাছ ছোট, ফুল",
+    note: "মূল তালিকায় 'ফুল' উল্লেখ করা হয়েছে।",
     icon: "🌳",
     image: "/images/plants/longan.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-06-10",
-        title: "রোপণ",
-        description: "লংগনের চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-03-15",
-        title: "ফুল এসেছে",
-        description: "লংগন গাছে ফুল এসেছে।",
-        type: "flowering",
-      },
-    ],
+    timeline: createTimeline(
+      38,
+      "২২ আগস্ট ২০২৬",
+      "লংগন",
+      "গাছ ছোট, ফুল",
+    ),
   },
 
   {
@@ -1272,26 +832,18 @@ export const plants: Plant[] = [
     name: "চায়না মিষ্টি কমলা",
     quantity: 1,
     category: "সাইট্রাস",
-    plantedDate: "2024-04-05",
-    age: "২ বছর",
-    location: "সাইট্রাস বাগান",
-    health: 95,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২৪ আগস্ট ২০২৬",
+    price: 200,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍊",
-    image: "/images/plants/china-orange.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-04-05",
-        title: "রোপণ",
-        description: "চায়না মিষ্টি কমলার চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    image: "https://i.postimg.cc/sgTbmL9H/IMG-20260913-134756-516-jpg.jpg",
+    timeline: createTimeline(
+      39,
+      "২৪ আগস্ট ২০২৬",
+      "চায়না মিষ্টি কমলা",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1299,26 +851,18 @@ export const plants: Plant[] = [
     name: "মিষ্টি তেঁতুল",
     quantity: 1,
     category: "ফলজ",
-    plantedDate: "2023-05-15",
-    age: "৩ বছর",
-    location: "বাগান",
-    health: 93,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৫ দিন",
-    nextWatering: "৩ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "৩০ আগস্ট ২০২৬",
+    price: 80,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
     image: "/images/plants/sweet-tamarind.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-05-15",
-        title: "রোপণ",
-        description: "মিষ্টি তেঁতুল গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      40,
+      "৩০ আগস্ট ২০২৬",
+      "মিষ্টি তেঁতুল",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1326,34 +870,18 @@ export const plants: Plant[] = [
     name: "টগর",
     quantity: 1,
     category: "ফুল",
-    scientificName: "Tabernaemontana divaricata",
-    plantedDate: "2025-03-10",
-    age: "১ বছর",
-    location: "ফুলের বাগান",
-    health: 97,
-    status: "Flowering",
-    growthStage: "Flowering",
-    watering: "প্রতি ২ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "আংশিক রোদ",
+    plantedDate: "৩০ আগস্ট ২০২৬",
+    price: 30,
+    result: "ফুল হয়েছে",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌼",
-    image: "/images/plants/togor.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2025-03-10",
-        title: "রোপণ",
-        description: "টগর গাছটি রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-05-10",
-        title: "ফুল ফুটেছে",
-        description: "গাছে সাদা ফুল ফুটেছে।",
-        type: "flowering",
-      },
-    ],
+    image: "",
+    timeline: createTimeline(
+      41,
+      "৩০ আগস্ট ২০২৬",
+      "টগর",
+      "ফুল হয়েছে",
+    ),
   },
 
   {
@@ -1361,27 +889,18 @@ export const plants: Plant[] = [
     name: "আতা ফল",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Annona squamosa",
-    plantedDate: "2024-05-15",
-    age: "২ বছর",
-    location: "ফল বাগান",
-    health: 93,
-    status: "Healthy",
-    growthStage: "Growing",
-    watering: "প্রতি ৪ দিন",
-    nextWatering: "২ দিন পর",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "৩১ আগস্ট ২০২৬",
+    price: 50,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
     image: "/images/plants/ata.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-05-15",
-        title: "রোপণ",
-        description: "আতা ফলের গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      42,
+      "৩১ আগস্ট ২০২৬",
+      "আতা ফল",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1389,41 +908,19 @@ export const plants: Plant[] = [
     name: "বাইকুনুর আঙ্গুর",
     quantity: 2,
     category: "ফলজ",
-    variety: "Baikonur",
-    plantedDate: "2024-02-10",
-    age: "২ বছর",
-    location: "মাচা বাগান",
-    health: 92,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "৬ সেপ্টেম্বর ২০২৬",
+    price: 170,
+    result: "গাছ ছোট",
+    nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
+    variety: "বাইকুনুর",
     icon: "🍇",
     image: "/images/plants/baikonur-grape.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-02-10",
-        title: "রোপণ",
-        description: "বাইকুনুর আঙ্গুরের লতা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-04-05",
-        title: "লতা বৃদ্ধি",
-        description: "লতা মাচায় ভালোভাবে ছড়িয়ে পড়েছে।",
-        type: "growth",
-      },
-      {
-        id: 3,
-        date: "2026-06-15",
-        title: "ফল ধরেছে",
-        description: "আঙ্গুরের থোকা দেখা গেছে।",
-        type: "fruiting",
-      },
-    ],
+    timeline: createTimeline(
+      43,
+      "৬ সেপ্টেম্বর ২০২৬",
+      "বাইকুনুর আঙ্গুর",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1431,27 +928,18 @@ export const plants: Plant[] = [
     name: "লাল জামরুল",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Syzygium samarangense",
-    plantedDate: "2024-03-15",
-    age: "২ বছর",
-    location: "ফল বাগান",
-    health: 94,
-    status: "Growing",
-    growthStage: "Growing",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "৭ সেপ্টেম্বর ২০২৬",
+    price: 150,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍎",
     image: "/images/plants/red-jamrul.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2024-03-15",
-        title: "রোপণ",
-        description: "লাল জামরুলের চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-    ],
+    timeline: createTimeline(
+      44,
+      "৭ সেপ্টেম্বর ২০২৬",
+      "লাল জামরুল",
+      "গাছ ছোট",
+    ),
   },
 
   {
@@ -1459,34 +947,18 @@ export const plants: Plant[] = [
     name: "কামরাঙ্গা",
     quantity: 1,
     category: "ফলজ",
-    scientificName: "Averrhoa carambola",
-    plantedDate: "2023-07-05",
-    age: "৩ বছর",
-    location: "ফল বাগান",
-    health: 95,
-    status: "Fruiting",
-    growthStage: "Fruiting",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২১ সেপ্টেম্বর ২০২৬",
+    price: 150,
+    result: "ফল হয়েছে, ফুল হয়েছে",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "⭐",
     image: "/images/plants/carambola.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2023-07-05",
-        title: "রোপণ",
-        description: "কামরাঙ্গা গাছ রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-05-20",
-        title: "ফল ধরেছে",
-        description: "গাছে কামরাঙ্গা ধরেছে।",
-        type: "fruiting",
-      },
-    ],
+    timeline: createTimeline(
+      45,
+      "২১ সেপ্টেম্বর ২০২৬",
+      "কামরাঙ্গা",
+      "ফল হয়েছে, ফুল হয়েছে",
+    ),
   },
 
   {
@@ -1494,33 +966,56 @@ export const plants: Plant[] = [
     name: "বাগান বিলাস",
     quantity: 1,
     category: "ফুল",
-    scientificName: "Bougainvillea",
-    plantedDate: "2025-01-20",
-    age: "১ বছর",
-    location: "ফুলের বাগান",
-    health: 96,
-    status: "Flowering",
-    growthStage: "Flowering",
-    watering: "প্রতি ৩ দিন",
-    nextWatering: "আগামীকাল",
-    sunlight: "পূর্ণ রোদ",
+    plantedDate: "২১ সেপ্টেম্বর ২০২৬",
+    price: 40,
+    result: "গাছ ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌸",
     image: "/images/plants/bougainvillea.jpg",
-    timeline: [
-      {
-        id: 1,
-        date: "2025-01-20",
-        title: "রোপণ",
-        description: "বাগান বিলাসের চারা রোপণ করা হয়।",
-        type: "planted",
-      },
-      {
-        id: 2,
-        date: "2026-03-20",
-        title: "ফুল ফুটেছে",
-        description: "বাগান বিলাসে সুন্দর ফুল ফুটেছে।",
-        type: "flowering",
-      },
-    ],
+    timeline: createTimeline(
+      46,
+      "২১ সেপ্টেম্বর ২০২৬",
+      "বাগান বিলাস",
+      "গাছ ছোট",
+    ),
   },
 ];
+
+/* ---------------------------------------------------------
+   Garden Statistics
+--------------------------------------------------------- */
+
+export const totalPlantVarieties = plants.length;
+
+export const totalPlants = plants.reduce(
+  (total, plant) => total + plant.quantity,
+  0,
+);
+
+export const totalCost = plants.reduce(
+  (total, plant) =>
+    total + (plant.price ?? 0) * plant.quantity,
+  0,
+);
+
+export const categories = Array.from(
+  new Set(plants.map((plant) => plant.category)),
+);
+
+export const totalCategories = categories.length;
+
+export const fruitingPlants = plants.filter((plant) =>
+  plant.result?.includes("ফল হয়েছে"),
+);
+
+export const floweringPlants = plants.filter((plant) =>
+  plant.result?.includes("ফুল"),
+);
+
+export const smallPlants = plants.filter((plant) =>
+  plant.result?.includes("গাছ ছোট"),
+);
+
+export const deadPlants = plants.filter((plant) =>
+  plant.result?.includes("মরে গেছে"),
+);
