@@ -57,7 +57,6 @@ export function Hero() {
 
       <section className="relative mx-auto max-w-7xl px-4 pb-20 pt-36 sm:px-6 sm:pt-40 lg:px-8 lg:pb-28">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
-
           {/* Left */}
           <div className="max-w-3xl">
             <Badge
@@ -76,10 +75,9 @@ export function Hero() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-pretty text-base leading-8 text-slate-600 sm:text-lg dark:text-slate-300">
-              আমার প্রতিটি গাছের তথ্য সংরক্ষণ করুন, প্রয়োজনীয় পরিচর্যার
-              কথা মনে রাখুন, বাগানের প্রয়োজন বুঝুন এবং সময়ের সাথে গাছের
-              বেড়ে ওঠা পর্যবেক্ষণ করুন—সবকিছু একটি সুন্দর বাগান
-              ড্যাশবোর্ড থেকে।
+              আমার প্রতিটি গাছের তথ্য সংরক্ষণ করুন, প্রয়োজনীয় পরিচর্যার কথা
+              মনে রাখুন, বাগানের প্রয়োজন বুঝুন এবং সময়ের সাথে গাছের বেড়ে ওঠা
+              পর্যবেক্ষণ করুন—সবকিছু একটি সুন্দর বাগান ড্যাশবোর্ড থেকে।
             </p>
 
             {/* CTA */}
@@ -135,13 +133,11 @@ export function Hero() {
 
           {/* Right Visual */}
           <div className="relative mx-auto w-full max-w-xl lg:ml-auto">
-
             {/* Glow */}
             <div className="absolute inset-10 rounded-full bg-emerald-400/20 blur-[80px] dark:bg-emerald-500/10" />
 
             {/* Main Dashboard */}
             <div className="relative rounded-[2rem] border border-white/80 bg-white/80 p-4 shadow-2xl shadow-emerald-950/10 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/80 sm:p-5">
-
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div>
@@ -246,9 +242,7 @@ export function Hero() {
                     key={plant.name}
                     className={`rounded-2xl p-3 ${plant.color}`}
                   >
-                    <div className="text-2xl">
-                      {plant.icon}
-                    </div>
+                    <div className="text-2xl">{plant.icon}</div>
 
                     <p className="mt-2 truncate text-xs font-bold text-slate-900 dark:text-white">
                       {plant.name}
@@ -348,9 +342,7 @@ function StatCard({
         {value}
       </p>
 
-      <p className="text-[10px] text-slate-500 dark:text-slate-400">
-        {label}
-      </p>
+      <p className="text-[10px] text-slate-500 dark:text-slate-400">{label}</p>
     </div>
   );
 }
