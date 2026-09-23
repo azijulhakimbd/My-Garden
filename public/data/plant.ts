@@ -1,3 +1,4 @@
+
 export type PlantCategory =
   | "ফলজ"
   | "সাইট্রাস"
@@ -15,7 +16,9 @@ export type PlantStatus =
   | "ফুল এসেছে"
   | "ফল হয়েছে ও ফুল হয়েছে"
   | "গাছ ছোট ও ফল হয়নি"
-  | "গাছ ছোট ও ফুল হয়েছে";
+  | "গাছ ছোট ও ফুল হয়েছে"
+  | "ফুল এসেছে কিন্তু ফল হয়নি"
+  | "গাছ ছোট ও গাছ মরে গেছে";
 
 export type TimelineEventType =
   | "planted"
@@ -40,44 +43,39 @@ export interface Plant {
   category: PlantCategory;
 
   /**
-   * ব্যবহারকারীর দেওয়া রোপণের তারিখ/সাল
+   * ব্যবহারকারীর দেওয়া রোপণের তারিখ / সাল
    */
   plantedDate: string;
 
   /**
-   * ব্যবহারকারীর দেওয়া দাম
+   * পুরোনো UI compatibility fields
+   * তথ্য না থাকলে এগুলো undefined থাকবে।
+   */
+  scientificName?: string;
+  age?: string;
+  health?: number;
+  status?: PlantStatus;
+  growthStage?: string;
+  watering?: string;
+  nextWatering?: string;
+  sunlight?: string;
+  location?: string;
+  soil?: string;
+  fertilizer?: string;
+
+  /**
+   * প্রকৃত বাগানের তথ্য
    */
   price?: number;
-
-  /**
-   * ফল/ফুল/বর্তমান অবস্থা
-   */
   result?: string;
-
-  /**
-   * নার্সারি বা উৎস
-   */
   nursery?: string;
-
-  /**
-   * অতিরিক্ত তথ্য
-   */
   note?: string;
-
-  /**
-   * জাত/ভ্যারাইটি
-   */
   variety?: string;
 
   /**
-   * UI-এর জন্য icon
+   * UI
    */
   icon: string;
-
-  /**
-   * ছবি থাকলে এখানে path দিন।
-   * যেমন: /images/plants/lichu.jpg
-   */
   image?: string;
 
   /**
@@ -91,14 +89,14 @@ export interface Plant {
 --------------------------------------------------------- */
 
 function createTimeline(
-  id: number,
+  plantId: number,
   plantedDate: string,
   name: string,
   result?: string,
 ): PlantTimelineEvent[] {
   const events: PlantTimelineEvent[] = [
     {
-      id: 1,
+      id: plantId * 100 + 1,
       date: plantedDate,
       title: "রোপণ / সংগ্রহ",
       description: `${name} গাছটি ${plantedDate}-এ রোপণ বা সংগ্রহ করা হয়েছে।`,
@@ -106,41 +104,38 @@ function createTimeline(
     },
   ];
 
-  if (result) {
-    const normalized = result.toLowerCase();
+  if (!result) {
+    return events;
+  }
 
-    if (result.includes("ফুল")) {
-      events.push({
-        id: events.length + 1,
-        date: "বর্তমান",
-        title: "ফুলের তথ্য",
-        description: `${name}: ${result}`,
-        type: "flowering",
-      });
-    }
+  if (result.includes("ফুল")) {
+    events.push({
+      id: plantId * 100 + 2,
+      date: "বর্তমান",
+      title: "ফুলের তথ্য",
+      description: `${name}: ${result}`,
+      type: "flowering",
+    });
+  }
 
-    if (result.includes("ফল")) {
-      events.push({
-        id: events.length + 1,
-        date: "বর্তমান",
-        title: "ফলের তথ্য",
-        description: `${name}: ${result}`,
-        type: "fruiting",
-      });
-    }
+  if (result.includes("ফল")) {
+    events.push({
+      id: plantId * 100 + 3,
+      date: "বর্তমান",
+      title: "ফলের তথ্য",
+      description: `${name}: ${result}`,
+      type: "fruiting",
+    });
+  }
 
-    if (
-      normalized.includes("ছোট") ||
-      normalized.includes("মরে গেছে")
-    ) {
-      events.push({
-        id: events.length + 1,
-        date: "বর্তমান",
-        title: "বর্তমান অবস্থা",
-        description: `${name}: ${result}`,
-        type: "note",
-      });
-    }
+  if (result.includes("গাছ ছোট") || result.includes("মরে গেছে")) {
+    events.push({
+      id: plantId * 100 + 4,
+      date: "বর্তমান",
+      title: "বর্তমান অবস্থা",
+      description: `${name}: ${result}`,
+      type: "note",
+    });
   }
 
   return events;
@@ -158,6 +153,8 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০০৮",
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     icon: "🍒",
     image: "/images/plants/lichu.jpg",
     timeline: createTimeline(1, "২০০৮", "লিচু", "ফল হয়েছে"),
@@ -170,6 +167,9 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০০৮",
     result: "চারা লাগানো, ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
+    note: "চারা লাগানো হয়েছে।",
     icon: "🥥",
     image: "/images/plants/coconut.jpg",
     timeline: createTimeline(
@@ -187,6 +187,8 @@ export const plants: Plant[] = [
     category: "আম",
     plantedDate: "২০০৮",
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     icon: "🥭",
     image: "/images/plants/mango.jpg",
     timeline: createTimeline(3, "২০০৮", "আম", "ফল হয়েছে"),
@@ -199,6 +201,9 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০০৮",
     result: "চারা লাগানো, ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
+    note: "চারা লাগানো হয়েছে।",
     icon: "🍈",
     image: "/images/plants/jackfruit.jpg",
     timeline: createTimeline(
@@ -216,6 +221,8 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০১০",
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     icon: "🌳",
     image: "/images/plants/chalta.jpg",
     timeline: createTimeline(5, "২০১০", "চালতা", "ফল হয়েছে"),
@@ -228,6 +235,8 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০১৩",
     result: "ফল হয়নি, গাছ ছোট",
+    status: "গাছ ছোট ও ফল হয়নি",
+    growthStage: "ছোট",
     icon: "🌴",
     image: "/images/plants/tal.jpg",
     timeline: createTimeline(
@@ -245,6 +254,9 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০১৫",
     result: "বীজ থেকে হয়েছে, ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
+    note: "বীজ থেকে হয়েছে।",
     icon: "🌴",
     image: "/images/plants/date.jpg",
     timeline: createTimeline(
@@ -262,6 +274,9 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০১৬",
     result: "চারা লাগানো, ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
+    note: "চারা লাগানো হয়েছে।",
     icon: "🍌",
     image: "/images/plants/banana.jpg",
     timeline: createTimeline(
@@ -280,6 +295,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২১",
     price: 50,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     icon: "🌳",
     image: "/images/plants/amra.jpg",
     timeline: createTimeline(9, "২০২১", "আমড়া", "ফল হয়েছে"),
@@ -292,6 +309,9 @@ export const plants: Plant[] = [
     category: "ফলজ",
     plantedDate: "২০২২",
     result: "বীজ থেকে হয়েছে, ফল হয়নি",
+    status: "ফল হয়নি",
+    growthStage: "বর্ধনশীল",
+    note: "বীজ থেকে হয়েছে।",
     icon: "🍈",
     image: "/images/plants/bel.jpg",
     timeline: createTimeline(
@@ -310,6 +330,8 @@ export const plants: Plant[] = [
     plantedDate: "২২ আগস্ট ২০২২",
     price: 125,
     result: "ফুল এসেছে কিন্তু ফল হয় নি",
+    status: "ফুল এসেছে কিন্তু ফল হয়নি",
+    growthStage: "ফুল",
     nursery: "শাহিন নার্সারি",
     icon: "🌳",
     image: "/images/plants/kat-badam.jpg",
@@ -329,6 +351,8 @@ export const plants: Plant[] = [
     plantedDate: "সেপ্টেম্বর ২০২২",
     price: 50,
     result: "ফল হয়নি",
+    status: "ফল হয়নি",
+    growthStage: "বর্ধনশীল",
     icon: "🌿",
     image: "/images/plants/arboroi.jpg",
     timeline: createTimeline(
@@ -347,6 +371,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৩",
     price: 20,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     icon: "🍋",
     image: "/images/plants/lemon.jpg",
     timeline: createTimeline(
@@ -365,6 +391,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৪",
     price: 60,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     icon: "🌳",
     image: "/images/plants/bol-sundori.jpg",
     timeline: createTimeline(
@@ -383,6 +411,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৫",
     price: 30,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🥭",
     image: "/images/plants/papaya.jpg",
@@ -402,6 +432,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৫",
     price: 40,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🌿",
     image: "/images/plants/neem.jpg",
@@ -421,6 +453,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৫",
     price: 0,
     result: "ফল হয়নি, গাছ ছোট",
+    status: "গাছ ছোট ও ফল হয়নি",
+    growthStage: "ছোট",
     nursery: "বিনা, নালিতাবাড়ী উপকেন্দ্র",
     note: "বিনা ১ লেবুর চারা বিনামূল্যে সংগ্রহ করা হয়েছে।",
     icon: "🍋",
@@ -441,6 +475,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৫",
     price: 50,
     result: "গাছ মরে গেছে",
+    status: "গাছ মরে গেছে",
+    growthStage: "মৃত",
     icon: "🌳",
     image: "/images/plants/ata.jpg",
     timeline: createTimeline(
@@ -459,6 +495,8 @@ export const plants: Plant[] = [
     plantedDate: "বৃক্ষ মেলা ২০২৫, শেরপুর",
     price: 60,
     result: "গাছ ছোট, গাছ মরে গেছে",
+    status: "গাছ ছোট ও গাছ মরে গেছে",
+    growthStage: "মৃত",
     icon: "🌳",
     image: "/images/plants/lotkon.jpg",
     timeline: createTimeline(
@@ -477,6 +515,8 @@ export const plants: Plant[] = [
     plantedDate: "বৃক্ষ মেলা ২০২৫, শেরপুর",
     price: 50,
     result: "গাছ ছোট, ফল হয়নি",
+    status: "গাছ ছোট ও ফল হয়নি",
+    growthStage: "ছোট",
     icon: "🌿",
     image: "/images/plants/koromcha.jpg",
     timeline: createTimeline(
@@ -495,6 +535,8 @@ export const plants: Plant[] = [
     plantedDate: "বৃক্ষ মেলা ২০২৫, শেরপুর",
     price: 40,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     icon: "🌿",
     image: "/images/plants/tej-pata.jpg",
     timeline: createTimeline(
@@ -513,6 +555,8 @@ export const plants: Plant[] = [
     plantedDate: "সেপ্টেম্বর ২০২৫",
     price: 230,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     icon: "🍎",
     image: "/images/plants/pomegranate.jpg",
     timeline: createTimeline(
@@ -531,6 +575,8 @@ export const plants: Plant[] = [
     plantedDate: "সেপ্টেম্বর ২০২৫",
     price: 230,
     result: "গাছ ছোট, ফল হয়নি",
+    status: "গাছ ছোট ও ফল হয়নি",
+    growthStage: "ছোট",
     note: "মূল তালিকায় দাম 'ঐ' হিসেবে দেওয়া ছিল।",
     icon: "🍏",
     image: "/images/plants/apple-boroi.jpg",
@@ -550,6 +596,8 @@ export const plants: Plant[] = [
     plantedDate: "সেপ্টেম্বর ২০২৫",
     price: 230,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     note: "মূল তালিকায় দাম 'ঐ' হিসেবে দেওয়া ছিল।",
     icon: "🍐",
     image: "/images/plants/guava.jpg",
@@ -569,6 +617,8 @@ export const plants: Plant[] = [
     plantedDate: "সেপ্টেম্বর ২০২৫",
     price: 230,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     note: "মূল তালিকায় দাম 'ঐ' হিসেবে দেওয়া ছিল।",
     icon: "🍐",
     image: "/images/plants/brown-guava.jpg",
@@ -588,6 +638,8 @@ export const plants: Plant[] = [
     plantedDate: "অক্টোবর ২০২৫",
     price: 100,
     result: "ফল হয়নি",
+    status: "ফল হয়নি",
+    growthStage: "বর্ধনশীল",
     nursery: "চান মিয়া, গোজাকুড়া",
     variety: "হিম সাগর",
     icon: "🥭",
@@ -608,8 +660,11 @@ export const plants: Plant[] = [
     plantedDate: "২০২৬",
     price: 110,
     result: "ফল হয়নি",
+    status: "ফল হয়নি",
+    growthStage: "বর্ধনশীল",
     icon: "🍊",
-    image: "https://i.postimg.cc/P5S0y7z2/IMG-20260913-134741-350-jpg.jpg",
+    image:
+      "https://i.postimg.cc/P5S0y7z2/IMG-20260913-134741-350-jpg.jpg",
     timeline: createTimeline(
       27,
       "২০২৬",
@@ -626,6 +681,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৬",
     price: 150,
     result: "ফল হয়েছে",
+    status: "ফল হয়েছে",
+    growthStage: "ফল",
     nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
     icon: "🌳",
     image: "/images/plants/thai-safeda.jpg",
@@ -645,6 +702,8 @@ export const plants: Plant[] = [
     plantedDate: "২০২৬",
     price: 100,
     result: "গাছ মরে গেছে",
+    status: "গাছ মরে গেছে",
+    growthStage: "মৃত",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🍇",
     image: "/images/plants/grape.jpg",
@@ -664,6 +723,8 @@ export const plants: Plant[] = [
     plantedDate: "জুন ২০২৬",
     price: 100,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     variety: "কাটিমন",
     icon: "🥭",
@@ -684,6 +745,8 @@ export const plants: Plant[] = [
     plantedDate: "জুন ২০২৬",
     price: 100,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🍈",
     image: "/images/plants/kod-bel.jpg",
@@ -703,6 +766,8 @@ export const plants: Plant[] = [
     plantedDate: "জুন ২০২৬",
     price: 100,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🌳",
     image: "/images/plants/golap-jam.jpg",
@@ -722,6 +787,8 @@ export const plants: Plant[] = [
     plantedDate: "১৭ জুলাই ২০২৬",
     price: 50,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍐",
     image: "/images/plants/china-guava.jpg",
@@ -741,6 +808,8 @@ export const plants: Plant[] = [
     plantedDate: "২৮ জুলাই ২০২৬",
     price: 120,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
     image: "/images/plants/sharifa.jpg",
@@ -760,9 +829,12 @@ export const plants: Plant[] = [
     plantedDate: "১০ আগস্ট ২০২৬",
     price: 170,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍊",
-    image: "https://i.postimg.cc/XYjTwWFm/IMG-20260913-134744-942-jpg.jpg",
+    image:
+      "https://i.postimg.cc/XYjTwWFm/IMG-20260913-134744-942-jpg.jpg",
     timeline: createTimeline(
       35,
       "১০ আগস্ট ২০২৬",
@@ -779,9 +851,12 @@ export const plants: Plant[] = [
     plantedDate: "১০ আগস্ট ২০২৬",
     price: 30,
     result: "গাছ ছোট, ফুল হয়েছে",
+    status: "গাছ ছোট ও ফুল হয়েছে",
+    growthStage: "ফুল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌼",
-    image: "https://i.postimg.cc/kgTLsHv7/IMG-20260913-134708-324-jpg.jpg",
+    image:
+      "https://i.postimg.cc/kgTLsHv7/IMG-20260913-134708-324-jpg.jpg",
     timeline: createTimeline(
       36,
       "১০ আগস্ট ২০২৬",
@@ -798,6 +873,8 @@ export const plants: Plant[] = [
     plantedDate: "২২ আগস্ট ২০২৬",
     price: 100,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     icon: "🌳",
     image: "/images/plants/guti-lotkon.jpg",
     timeline: createTimeline(
@@ -816,6 +893,8 @@ export const plants: Plant[] = [
     plantedDate: "২২ আগস্ট ২০২৬",
     price: 60,
     result: "গাছ ছোট, ফুল",
+    status: "গাছ ছোট ও ফুল হয়েছে",
+    growthStage: "ফুল",
     note: "মূল তালিকায় 'ফুল' উল্লেখ করা হয়েছে।",
     icon: "🌳",
     image: "/images/plants/longan.jpg",
@@ -835,9 +914,12 @@ export const plants: Plant[] = [
     plantedDate: "২৪ আগস্ট ২০২৬",
     price: 200,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍊",
-    image: "https://i.postimg.cc/sgTbmL9H/IMG-20260913-134756-516-jpg.jpg",
+    image:
+      "https://i.postimg.cc/sgTbmL9H/IMG-20260913-134756-516-jpg.jpg",
     timeline: createTimeline(
       39,
       "২৪ আগস্ট ২০২৬",
@@ -854,6 +936,8 @@ export const plants: Plant[] = [
     plantedDate: "৩০ আগস্ট ২০২৬",
     price: 80,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
     image: "/images/plants/sweet-tamarind.jpg",
@@ -873,9 +957,11 @@ export const plants: Plant[] = [
     plantedDate: "৩০ আগস্ট ২০২৬",
     price: 30,
     result: "ফুল হয়েছে",
+    status: "ফুল হয়েছে",
+    growthStage: "ফুল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌼",
-    image: "",
+    image: undefined,
     timeline: createTimeline(
       41,
       "৩০ আগস্ট ২০২৬",
@@ -892,6 +978,8 @@ export const plants: Plant[] = [
     plantedDate: "৩১ আগস্ট ২০২৬",
     price: 50,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
     image: "/images/plants/ata.jpg",
@@ -911,6 +999,8 @@ export const plants: Plant[] = [
     plantedDate: "৬ সেপ্টেম্বর ২০২৬",
     price: 170,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
     variety: "বাইকুনুর",
     icon: "🍇",
@@ -931,6 +1021,8 @@ export const plants: Plant[] = [
     plantedDate: "৭ সেপ্টেম্বর ২০২৬",
     price: 150,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍎",
     image: "/images/plants/red-jamrul.jpg",
@@ -950,6 +1042,8 @@ export const plants: Plant[] = [
     plantedDate: "২১ সেপ্টেম্বর ২০২৬",
     price: 150,
     result: "ফল হয়েছে, ফুল হয়েছে",
+    status: "ফল হয়েছে ও ফুল হয়েছে",
+    growthStage: "ফল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "⭐",
     image: "/images/plants/carambola.jpg",
@@ -969,6 +1063,8 @@ export const plants: Plant[] = [
     plantedDate: "২১ সেপ্টেম্বর ২০২৬",
     price: 40,
     result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌸",
     image: "/images/plants/bougainvillea.jpg",
@@ -985,18 +1081,32 @@ export const plants: Plant[] = [
    Garden Statistics
 --------------------------------------------------------- */
 
+/**
+ * মোট আলাদা Plant record
+ * = 46
+ */
 export const totalPlantVarieties = plants.length;
 
+/**
+ * quantity অনুযায়ী মোট গাছ
+ */
 export const totalPlants = plants.reduce(
   (total, plant) => total + plant.quantity,
   0,
 );
 
-export const totalCost = plants.reduce(
-  (total, plant) =>
-    total + (plant.price ?? 0) * plant.quantity,
-  0,
-);
+/**
+ * ব্যবহারকারীর দেওয়া মোট খরচ
+ *
+ * গুরুত্বপূর্ণ:
+ * 'ঐ', 'ফ্রি', চারা/বীজ ইত্যাদির কারণে
+ * শুধু price × quantity দিয়ে প্রকৃত মোট খরচ
+ * নির্ভুলভাবে বের করা যাবে না।
+ *
+ * তাই ব্যবহারকারীর দেওয়া মোট:
+ * ২,৯৬৫ টাকা
+ */
+export const totalCost = 2965;
 
 export const categories = Array.from(
   new Set(plants.map((plant) => plant.category)),
@@ -1004,18 +1114,30 @@ export const categories = Array.from(
 
 export const totalCategories = categories.length;
 
+/**
+ * যেসব গাছে ফল হয়েছে
+ */
 export const fruitingPlants = plants.filter((plant) =>
   plant.result?.includes("ফল হয়েছে"),
 );
 
+/**
+ * যেসব গাছে ফুল এসেছে / হয়েছে
+ */
 export const floweringPlants = plants.filter((plant) =>
   plant.result?.includes("ফুল"),
 );
 
+/**
+ * ছোট গাছ
+ */
 export const smallPlants = plants.filter((plant) =>
   plant.result?.includes("গাছ ছোট"),
 );
 
+/**
+ * মরে যাওয়া গাছ
+ */
 export const deadPlants = plants.filter((plant) =>
   plant.result?.includes("মরে গেছে"),
 );
