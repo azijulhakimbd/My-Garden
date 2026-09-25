@@ -132,7 +132,7 @@ function PlantCard({
       >
         {plant.image ? (
           <Image
-            src={plant.image}
+            src={plant.image || "../../public/images/plant placeholder.png"}
             alt={plant.name}
             fill
             sizes="

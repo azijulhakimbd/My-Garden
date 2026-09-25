@@ -156,7 +156,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🍒",
-    image: "/images/plants/lichu.jpg",
+    image: "",
     timeline: createTimeline(1, "২০০৮", "লিচু", "ফল হয়েছে"),
   },
 
@@ -171,7 +171,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     note: "চারা লাগানো হয়েছে।",
     icon: "🥥",
-    image: "/images/plants/coconut.jpg",
+    image: "",
     timeline: createTimeline(
       2,
       "২০০৮",
@@ -190,7 +190,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🥭",
-    image: "/images/plants/mango.jpg",
+    image: "",
     timeline: createTimeline(3, "২০০৮", "আম", "ফল হয়েছে"),
   },
 
@@ -205,7 +205,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     note: "চারা লাগানো হয়েছে।",
     icon: "🍈",
-    image: "/images/plants/jackfruit.jpg",
+    image: "",
     timeline: createTimeline(
       4,
       "২০০৮",
@@ -224,7 +224,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🌳",
-    image: "/images/plants/chalta.jpg",
+    image: "",
     timeline: createTimeline(5, "২০১০", "চালতা", "ফল হয়েছে"),
   },
 
@@ -238,7 +238,7 @@ export const plants: Plant[] = [
     status: "গাছ ছোট ও ফল হয়নি",
     growthStage: "ছোট",
     icon: "🌴",
-    image: "/images/plants/tal.jpg",
+    image: "",
     timeline: createTimeline(
       6,
       "২০১৩",
@@ -258,7 +258,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     note: "বীজ থেকে হয়েছে।",
     icon: "🌴",
-    image: "/images/plants/date.jpg",
+    image: "",
     timeline: createTimeline(
       7,
       "২০১৫",
@@ -278,7 +278,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     note: "চারা লাগানো হয়েছে।",
     icon: "🍌",
-    image: "/images/plants/banana.jpg",
+    image: "",
     timeline: createTimeline(
       8,
       "২০১৬",
@@ -298,7 +298,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🌳",
-    image: "/images/plants/amra.jpg",
+    image: "",
     timeline: createTimeline(9, "২০২১", "আমড়া", "ফল হয়েছে"),
   },
 
@@ -334,7 +334,7 @@ export const plants: Plant[] = [
     growthStage: "ফুল",
     nursery: "শাহিন নার্সারি",
     icon: "🌳",
-    image: "/images/plants/kat-badam.jpg",
+    image: "",
     timeline: createTimeline(
       11,
       "২২ আগস্ট ২০২২",
@@ -354,7 +354,7 @@ export const plants: Plant[] = [
     status: "ফল হয়নি",
     growthStage: "বর্ধনশীল",
     icon: "🌿",
-    image: "/images/plants/arboroi.jpg",
+    image: "",
     timeline: createTimeline(
       12,
       "সেপ্টেম্বর ২০২২",
@@ -374,7 +374,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🍋",
-    image: "/images/plants/lemon.jpg",
+    image: "",
     timeline: createTimeline(
       13,
       "২০২৩",
@@ -394,7 +394,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🌳",
-    image: "/images/plants/bol-sundori.jpg",
+    image: "",
     timeline: createTimeline(
       14,
       "২০২৪",
@@ -415,7 +415,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🥭",
-    image: "/images/plants/papaya.jpg",
+    image: "",
     timeline: createTimeline(
       15,
       "২০২৫",
@@ -436,7 +436,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🌿",
-    image: "/images/plants/neem.jpg",
+    image: "",
     timeline: createTimeline(
       16,
       "২০২৫",
@@ -458,7 +458,7 @@ export const plants: Plant[] = [
     nursery: "বিনা, নালিতাবাড়ী উপকেন্দ্র",
     note: "বিনা ১ লেবুর চারা বিনামূল্যে সংগ্রহ করা হয়েছে।",
     icon: "🍋",
-    image: "/images/plants/bina-lemon.jpg",
+    image: "",
     timeline: createTimeline(
       17,
       "২০২৫",
@@ -478,7 +478,7 @@ export const plants: Plant[] = [
     status: "গাছ মরে গেছে",
     growthStage: "মৃত",
     icon: "🌳",
-    image: "/images/plants/ata.jpg",
+    image: "",
     timeline: createTimeline(
       18,
       "২০২৫",
@@ -498,7 +498,7 @@ export const plants: Plant[] = [
     status: "গাছ ছোট ও গাছ মরে গেছে",
     growthStage: "মৃত",
     icon: "🌳",
-    image: "/images/plants/lotkon.jpg",
+    image: "",
     timeline: createTimeline(
       19,
       "বৃক্ষ মেলা ২০২৫, শেরপুর",
@@ -518,7 +518,7 @@ export const plants: Plant[] = [
     status: "গাছ ছোট ও ফল হয়নি",
     growthStage: "ছোট",
     icon: "🌿",
-    image: "/images/plants/koromcha.jpg",
+    image: "",
     timeline: createTimeline(
       20,
       "বৃক্ষ মেলা ২০২৫, শেরপুর",
@@ -538,7 +538,7 @@ export const plants: Plant[] = [
     status: "গাছ ছোট",
     growthStage: "ছোট",
     icon: "🌿",
-    image: "/images/plants/tej-pata.jpg",
+    image: "",
     timeline: createTimeline(
       21,
       "বৃক্ষ মেলা ২০২৫, শেরপুর",
