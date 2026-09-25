@@ -961,7 +961,7 @@ export const plants: Plant[] = [
     growthStage: "ফুল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌼",
-    image: "",
+    image: undefined,
     timeline: createTimeline(
       41,
       "৩০ আগস্ট ২০২৬",
