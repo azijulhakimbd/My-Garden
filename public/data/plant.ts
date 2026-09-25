@@ -876,7 +876,7 @@ export const plants: Plant[] = [
     status: "গাছ ছোট",
     growthStage: "ছোট",
     icon: "🌳",
-    image: "g",
+    image: "",
     timeline: createTimeline(
       37,
       "২২ আগস্ট ২০২৬",

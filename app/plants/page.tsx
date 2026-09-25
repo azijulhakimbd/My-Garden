@@ -76,6 +76,16 @@ function getStatusIcon(status?: Plant["status"]) {
   return "🌱";
 }
 
+function hasValidImageSource(src?: string) {
+  if (!src) return false;
+
+  const value = src.trim();
+
+  return /^(?:\/?(?:[A-Za-z0-9_\-./]+)|https?:\/\/|data:|blob:)/.test(
+    value,
+  );
+}
+
 /* =========================================================
    Stat Card
 ========================================================= */
@@ -130,9 +140,9 @@ function PlantCard({
         className="relative block aspect-[16/10] w-full overflow-hidden bg-muted text-left"
         aria-label={`${plant.name} বিস্তারিত দেখুন`}
       >
-        {plant.image ? (
+        {hasValidImageSource(plant.image) ? (
           <Image
-            src={plant.image || "../../public/images/plant placeholder.png"}
+            src={plant.image as string}
             alt={plant.name}
             fill
             sizes="
@@ -337,8 +347,8 @@ function PlantDetails({
               src={plant.image}
               alt={plant.name}
               fill
-              sizes="(max-width: 768px) 100vw, 672px"
-              className="object-cover"
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="object-fill"
             />
           ) : (
             <div className="garden-gradient flex h-full items-center justify-center">

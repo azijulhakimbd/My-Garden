@@ -373,6 +373,16 @@ function StatCard({
 
 /* ---------------- Plant Card ---------------- */
 
+function hasValidImageSource(src?: string) {
+  if (!src) return false;
+
+  const value = src.trim();
+
+  return /^(?:\/?(?:[A-Za-z0-9_\-./]+)|https?:\/\/|data:|blob:)/.test(
+    value,
+  );
+}
+
 function PlantCard({
   plant,
   onView,
@@ -390,9 +400,9 @@ function PlantCard({
     <article className="group overflow-hidden rounded-2xl border bg-background transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image */}
       <div className="relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-500/10 via-green-500/5 to-transparent">
-        {plant.image ? (
+        {hasValidImageSource(plant.image) ? (
           <Image
-            src={plant.image}
+            src={plant.image as string}
             alt={plant.name}
             width={800}
             height={500}
@@ -550,9 +560,9 @@ function PlantDetailsModal({
 
           <div className="flex items-center gap-5 pr-10">
             <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-emerald-500/10">
-              {plant.image ? (
+              {hasValidImageSource(plant.image) ? (
                 <Image
-                  src={plant.image}
+                  src={plant.image as string}
                   alt={plant.name}
                   width={800}
                   height={500}
