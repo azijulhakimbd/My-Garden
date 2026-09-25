@@ -685,7 +685,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
     icon: "🌳",
-    image: "/images/plants/thai-safeda.jpg",
+    image: "",
     timeline: createTimeline(
       28,
       "২০২৬",
@@ -706,7 +706,7 @@ export const plants: Plant[] = [
     growthStage: "মৃত",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🍇",
-    image: "/images/plants/grape.jpg",
+    image: "",
     timeline: createTimeline(
       29,
       "২০২৬",
@@ -728,7 +728,7 @@ export const plants: Plant[] = [
     nursery: "চান মিয়া, গোজাকুড়া",
     variety: "কাটিমন",
     icon: "🥭",
-    image: "/images/plants/katimon.jpg",
+    image: "",
     timeline: createTimeline(
       30,
       "জুন ২০২৬",
@@ -749,7 +749,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🍈",
-    image: "/images/plants/kod-bel.jpg",
+    image: "",
     timeline: createTimeline(
       31,
       "জুন ২০২৬",
@@ -770,7 +770,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🌳",
-    image: "/images/plants/golap-jam.jpg",
+    image: "",
     timeline: createTimeline(
       32,
       "জুন ২০২৬",
@@ -791,7 +791,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍐",
-    image: "/images/plants/china-guava.jpg",
+    image: "",
     timeline: createTimeline(
       33,
       "১৭ জুলাই ২০২৬",
@@ -812,7 +812,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
-    image: "/images/plants/sharifa.jpg",
+    image: "",
     timeline: createTimeline(
       34,
       "২৮ জুলাই ২০২৬",
@@ -876,7 +876,7 @@ export const plants: Plant[] = [
     status: "গাছ ছোট",
     growthStage: "ছোট",
     icon: "🌳",
-    image: "/images/plants/guti-lotkon.jpg",
+    image: "g",
     timeline: createTimeline(
       37,
       "২২ আগস্ট ২০২৬",
