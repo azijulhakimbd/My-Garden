@@ -313,7 +313,7 @@ export const plants: Plant[] = [
     growthStage: "বর্ধনশীল",
     note: "বীজ থেকে হয়েছে।",
     icon: "🍈",
-    image: "/images/plants/bel.jpg",
+    image: "",
     timeline: createTimeline(
       10,
       "২০২২",
@@ -897,7 +897,7 @@ export const plants: Plant[] = [
     growthStage: "ফুল",
     note: "মূল তালিকায় 'ফুল' উল্লেখ করা হয়েছে।",
     icon: "🌳",
-    image: "/images/plants/longan.jpg",
+    image: "",
     timeline: createTimeline(
       38,
       "২২ আগস্ট ২০২৬",
@@ -940,7 +940,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
-    image: "/images/plants/sweet-tamarind.jpg",
+    image: "",
     timeline: createTimeline(
       40,
       "৩০ আগস্ট ২০২৬",
@@ -961,7 +961,7 @@ export const plants: Plant[] = [
     growthStage: "ফুল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌼",
-    image: undefined,
+    image: "",
     timeline: createTimeline(
       41,
       "৩০ আগস্ট ২০২৬",
@@ -982,7 +982,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌳",
-    image: "/images/plants/ata.jpg",
+    image: "",
     timeline: createTimeline(
       42,
       "৩১ আগস্ট ২০২৬",
@@ -1004,7 +1004,7 @@ export const plants: Plant[] = [
     nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
     variety: "বাইকুনুর",
     icon: "🍇",
-    image: "/images/plants/baikonur-grape.jpg",
+    image: "",
     timeline: createTimeline(
       43,
       "৬ সেপ্টেম্বর ২০২৬",
@@ -1025,7 +1025,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🍎",
-    image: "/images/plants/red-jamrul.jpg",
+    image: "",
     timeline: createTimeline(
       44,
       "৭ সেপ্টেম্বর ২০২৬",
@@ -1046,7 +1046,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "⭐",
-    image: "/images/plants/carambola.jpg",
+    image: "",
     timeline: createTimeline(
       45,
       "২১ সেপ্টেম্বর ২০২৬",
@@ -1067,7 +1067,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🌸",
-    image: "/images/plants/bougainvillea.jpg",
+    image: "",
     timeline: createTimeline(
       46,
       "২১ সেপ্টেম্বর ২০২৬",
