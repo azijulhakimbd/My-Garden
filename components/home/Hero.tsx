@@ -12,7 +12,6 @@ import {
   TreePine,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const plants = [
@@ -82,28 +81,21 @@ export function Hero() {
 
             {/* CTA */}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button
-                size="lg"
-                asChild
-                className="h-12 rounded-xl bg-emerald-600 px-6 text-white shadow-xl shadow-emerald-600/20 hover:bg-emerald-700"
+              <Link
+                href="/garden"
+                className="inline-flex h-12 items-center justify-center rounded-xl bg-emerald-600 px-6 text-sm font-semibold text-white shadow-xl shadow-emerald-600/20 transition hover:bg-emerald-700"
               >
-                <Link href="/garden">
-                  আমার বাগান দেখুন
-                  <ArrowRight className="ml-2 size-4" />
-                </Link>
-              </Button>
+                আমার বাগান দেখুন
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
 
-              <Button
-                size="lg"
-                variant="outline"
-                asChild
-                className="h-12 rounded-xl border-slate-200 bg-white/70 px-6 backdrop-blur hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+              <Link
+                href="/plants"
+                className="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white/70 px-6 text-sm font-semibold text-slate-900 backdrop-blur transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
               >
-                <Link href="/plants">
-                  <Leaf className="mr-2 size-4 text-emerald-600" />
-                  গাছপালা দেখুন
-                </Link>
-              </Button>
+                <Leaf className="mr-2 size-4 text-emerald-600" />
+                গাছপালা দেখুন
+              </Link>
             </div>
 
             {/* Trust */}

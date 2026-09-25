@@ -3,7 +3,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,19 +15,15 @@ export function ModeToggle() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="relative size-9 rounded-xl border-slate-200 bg-white/70 dark:border-white/10 dark:bg-white/5"
-          aria-label="Change theme"
-        >
-          <Sun className="size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+      <DropdownMenuTrigger
+        className="relative flex size-9 items-center justify-center rounded-xl border border-slate-200 bg-white/70 transition-colors hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+        aria-label="Change theme"
+      >
+        <Sun className="size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
 
-          <Moon className="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+        <Moon className="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
 
-          <span className="sr-only">Change theme</span>
-        </Button>
+        <span className="sr-only">Change theme</span>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-36">

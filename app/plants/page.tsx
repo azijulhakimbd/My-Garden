@@ -844,16 +844,14 @@ export default function PlantsPage() {
                 </p>
               </div>
 
-              <Button
-                asChild
-                className="w-full rounded-xl bg-garden text-garden-foreground hover:bg-garden/90 sm:w-auto"
+              <Link
+                href="/plants/add"
+                className="inline-flex w-full items-center justify-center rounded-xl bg-garden px-4 py-3 text-sm font-semibold text-garden-foreground transition hover:bg-garden/90 sm:w-auto"
               >
-                <Link href="/plants/add">
-                  <Sprout className="mr-2 h-4 w-4" />
-                  নতুন গাছ যোগ করুন
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+                <Sprout className="mr-2 h-4 w-4" />
+                নতুন গাছ যোগ করুন
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </div>
           </div>
         </div>

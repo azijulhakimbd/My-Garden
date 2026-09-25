@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Leaf, Menu, Sprout } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -66,25 +65,20 @@ export function Navbar() {
           <div className="hidden items-center gap-2 md:flex">
             <ModeToggle />
 
-            <Button
-              variant="ghost"
-              asChild
-              className="rounded-xl"
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
             >
-              <Link href="/login">
-                লগইন
-              </Link>
-            </Button>
+              লগইন
+            </Link>
 
-            <Button
-              asChild
-              className="rounded-xl bg-emerald-600 px-5 text-white shadow-lg shadow-emerald-600/10 hover:bg-emerald-700"
+            <Link
+              href="/garden"
+              className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-600/10 transition hover:bg-emerald-700"
             >
-              <Link href="/garden">
-                <Sprout className="mr-2 size-4" />
-                বাগান শুরু করুন
-              </Link>
-            </Button>
+              <Sprout className="mr-2 size-4" />
+              বাগান শুরু করুন
+            </Link>
           </div>
 
           {/* Mobile */}
@@ -92,15 +86,11 @@ export function Navbar() {
             <ModeToggle />
 
             <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-xl"
-                  aria-label="মেনু খুলুন"
-                >
-                  <Menu className="size-5" />
-                </Button>
+              <SheetTrigger
+                className="flex size-9 items-center justify-center rounded-xl text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+                aria-label="মেনু খুলুন"
+              >
+                <Menu className="size-5" />
               </SheetTrigger>
 
               <SheetContent
@@ -141,25 +131,20 @@ export function Navbar() {
 
                   {/* Mobile Actions */}
                   <div className="mt-8 flex flex-col gap-2">
-                    <Button
-                      variant="outline"
-                      asChild
-                      className="rounded-xl"
+                    <Link
+                      href="/login"
+                      className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
                     >
-                      <Link href="/login">
-                        লগইন
-                      </Link>
-                    </Button>
+                      লগইন
+                    </Link>
 
-                    <Button
-                      asChild
-                      className="rounded-xl bg-emerald-600 hover:bg-emerald-700"
+                    <Link
+                      href="/garden"
+                      className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
                     >
-                      <Link href="/garden">
-                        <Sprout className="mr-2 size-4" />
-                        বাগান শুরু করুন
-                      </Link>
-                    </Button>
+                      <Sprout className="mr-2 size-4" />
+                      বাগান শুরু করুন
+                    </Link>
                   </div>
                 </div>
               </SheetContent>

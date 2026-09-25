@@ -7,8 +7,6 @@ import {
   Sprout,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-
 export default function NotFound() {
   return (
     <main className="relative flex min-h-[calc(100vh-5rem)] items-center justify-center overflow-hidden bg-background px-4 py-20 sm:px-6">
@@ -61,39 +59,31 @@ export default function NotFound() {
 
         {/* Actions */}
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button
-            size="lg"
-            asChild
-            className="h-12 rounded-xl bg-primary px-6 shadow-lg shadow-emerald-900/10"
+          <Link
+            href="/"
+            className="inline-flex h-12 items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-lg shadow-emerald-900/10"
           >
-            <Link href="/">
-              <Home className="mr-2 size-4" />
-              Back to Garden
-            </Link>
-          </Button>
+            <Home className="mr-2 size-4" />
+            Back to Garden
+          </Link>
 
-          <Button
-            size="lg"
-            variant="outline"
-            asChild
-            className="h-12 rounded-xl"
+          <Link
+            href="/plants"
+            className="inline-flex h-12 items-center justify-center rounded-xl border border-border bg-background px-6 text-sm font-semibold text-foreground"
           >
-            <Link href="/plants">
-              <Search className="mr-2 size-4" />
-              Explore Plants
-            </Link>
-          </Button>
+            <Search className="mr-2 size-4" />
+            Explore Plants
+          </Link>
         </div>
 
         {/* Back link */}
-        <button
-          type="button"
-          onClick={() => window.history.back()}
+        <Link
+          href="/"
           className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
           Go back
-        </button>
+        </Link>
 
         {/* Bottom message */}
         <div className="mx-auto mt-14 flex max-w-md items-center justify-center gap-3 rounded-2xl border border-border/60 bg-card/60 px-5 py-4 text-left shadow-sm backdrop-blur">

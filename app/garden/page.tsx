@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import {
   CalendarDays,
@@ -390,9 +391,11 @@ function PlantCard({
       {/* Image */}
       <div className="relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-500/10 via-green-500/5 to-transparent">
         {plant.image ? (
-          <img
+          <Image
             src={plant.image}
             alt={plant.name}
+            width={800}
+            height={500}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
@@ -548,9 +551,11 @@ function PlantDetailsModal({
           <div className="flex items-center gap-5 pr-10">
             <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-emerald-500/10">
               {plant.image ? (
-                <img
+                <Image
                   src={plant.image}
                   alt={plant.name}
+                  width={800}
+                  height={500}
                   className="h-full w-full object-cover"
                 />
               ) : (
