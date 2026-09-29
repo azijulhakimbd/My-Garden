@@ -10,6 +10,7 @@
   ───────────────────────────────────────── */
 
   --font-sans: var(--font-geist-sans);
+  --font-bengali: var(--font-bengali);
   --font-mono: var(--font-mono);
   --font-heading: var(--font-geist-sans);
 
@@ -105,15 +106,15 @@
 
   /* Base */
   --background: oklch(0.985 0.008 145);
-  --foreground: oklch(0.20 0.025 155);
+  --foreground: oklch(0.2 0.025 155);
 
   /* Cards */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.025 155);
+  --card-foreground: oklch(0.2 0.025 155);
 
   /* Popovers */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.025 155);
+  --popover-foreground: oklch(0.2 0.025 155);
 
   /* Primary — Emerald */
   --primary: oklch(0.52 0.16 154);
@@ -121,7 +122,7 @@
 
   /* Secondary */
   --secondary: oklch(0.94 0.025 145);
-  --secondary-foreground: oklch(0.30 0.06 150);
+  --secondary-foreground: oklch(0.3 0.06 150);
 
   /* Muted */
   --muted: oklch(0.95 0.018 145);
@@ -129,10 +130,10 @@
 
   /* Accent */
   --accent: oklch(0.92 0.055 130);
-  --accent-foreground: oklch(0.30 0.08 145);
+  --accent-foreground: oklch(0.3 0.08 145);
 
   /* Destructive */
-  --destructive: oklch(0.62 0.20 25);
+  --destructive: oklch(0.62 0.2 25);
 
   /* Borders */
   --border: oklch(0.89 0.025 145);
@@ -147,7 +148,7 @@
   --garden-foreground: oklch(0.985 0.01 145);
 
   --leaf: oklch(0.62 0.15 145);
-  --leaf-foreground: oklch(0.20 0.05 150);
+  --leaf-foreground: oklch(0.2 0.05 150);
 
   --moss: oklch(0.72 0.12 115);
   --moss-foreground: oklch(0.25 0.06 120);
@@ -160,15 +161,15 @@
   --chart-2: oklch(0.62 0.15 145);
   --chart-3: oklch(0.72 0.12 115);
   --chart-4: oklch(0.68 0.12 80);
-  --chart-5: oklch(0.60 0.14 190);
+  --chart-5: oklch(0.6 0.14 190);
 
   /* Sidebar */
   --sidebar: oklch(0.97 0.015 145);
-  --sidebar-foreground: oklch(0.20 0.025 155);
+  --sidebar-foreground: oklch(0.2 0.025 155);
   --sidebar-primary: oklch(0.52 0.16 154);
   --sidebar-primary-foreground: oklch(0.985 0.01 145);
   --sidebar-accent: oklch(0.92 0.055 130);
-  --sidebar-accent-foreground: oklch(0.30 0.08 145);
+  --sidebar-accent-foreground: oklch(0.3 0.08 145);
   --sidebar-border: oklch(0.89 0.025 145);
   --sidebar-ring: oklch(0.52 0.16 154);
 
@@ -195,7 +196,7 @@
   --popover-foreground: oklch(0.96 0.018 145);
 
   /* Primary */
-  --primary: oklch(0.70 0.17 154);
+  --primary: oklch(0.7 0.17 154);
   --primary-foreground: oklch(0.15 0.03 155);
 
   /* Secondary */
@@ -204,11 +205,11 @@
 
   /* Muted */
   --muted: oklch(0.225 0.03 155);
-  --muted-foreground: oklch(0.70 0.035 150);
+  --muted-foreground: oklch(0.7 0.035 150);
 
   /* Accent */
   --accent: oklch(0.27 0.065 140);
-  --accent-foreground: oklch(0.90 0.08 135);
+  --accent-foreground: oklch(0.9 0.08 135);
 
   /* Destructive */
   --destructive: oklch(0.68 0.18 25);
@@ -216,13 +217,13 @@
   /* Borders */
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.70 0.17 154);
+  --ring: oklch(0.7 0.17 154);
 
   /* ─────────────────────────────────────────
      Garden palette
   ───────────────────────────────────────── */
 
-  --garden: oklch(0.70 0.17 154);
+  --garden: oklch(0.7 0.17 154);
   --garden-foreground: oklch(0.15 0.03 155);
 
   --leaf: oklch(0.68 0.15 145);
@@ -231,11 +232,11 @@
   --moss: oklch(0.72 0.13 115);
   --moss-foreground: oklch(0.18 0.04 120);
 
-  --lime: oklch(0.80 0.17 115);
+  --lime: oklch(0.8 0.17 115);
   --lime-foreground: oklch(0.18 0.05 120);
 
   /* Charts */
-  --chart-1: oklch(0.70 0.17 154);
+  --chart-1: oklch(0.7 0.17 154);
   --chart-2: oklch(0.68 0.15 145);
   --chart-3: oklch(0.72 0.13 115);
   --chart-4: oklch(0.72 0.13 80);
@@ -244,12 +245,12 @@
   /* Sidebar */
   --sidebar: oklch(0.155 0.028 155);
   --sidebar-foreground: oklch(0.96 0.018 145);
-  --sidebar-primary: oklch(0.70 0.17 154);
+  --sidebar-primary: oklch(0.7 0.17 154);
   --sidebar-primary-foreground: oklch(0.15 0.03 155);
   --sidebar-accent: oklch(0.27 0.065 140);
-  --sidebar-accent-foreground: oklch(0.90 0.08 135);
+  --sidebar-accent-foreground: oklch(0.9 0.08 135);
   --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.70 0.17 154);
+  --sidebar-ring: oklch(0.7 0.17 154);
 }
 
 /* =========================================================
@@ -268,10 +269,30 @@
 
   body {
     @apply min-h-screen bg-background text-foreground;
-    font-family: var(--font-geist-sans), sans-serif;
+
+    /*
+     * Geist remains the primary font for Latin text.
+     * Noto Sans Bengali is included as a fallback for
+     * Bengali Unicode characters.
+     */
+    font-family: var(--font-geist-sans), var(--font-bengali), sans-serif;
+
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+  }
+
+  /*
+   * Bengali typography
+   *
+   * Any element containing Bengali text can use:
+   * font-family: var(--font-bengali);
+   *
+   * This gives Bengali text a consistent appearance
+   * across the Garden application.
+   */
+  .font-bengali {
+    font-family: var(--font-bengali), sans-serif;
   }
 
   h1,
@@ -280,7 +301,8 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-geist-sans), sans-serif;
+    font-family: var(--font-geist-sans), var(--font-bengali), sans-serif;
+
     letter-spacing: -0.025em;
   }
 
@@ -311,7 +333,7 @@
       ),
       radial-gradient(
         circle at 85% 15%,
-        oklch(0.80 0.18 115 / 15%),
+        oklch(0.8 0.18 115 / 15%),
         transparent 28%
       ),
       var(--background);
@@ -320,12 +342,12 @@
   .garden-glow {
     box-shadow:
       0 0 0 1px oklch(0.52 0.16 154 / 8%),
-      0 20px 60px oklch(0.30 0.08 150 / 10%);
+      0 20px 60px oklch(0.3 0.08 150 / 10%);
   }
 
   .dark .garden-glow {
     box-shadow:
-      0 0 0 1px oklch(0.70 0.17 154 / 10%),
+      0 0 0 1px oklch(0.7 0.17 154 / 10%),
       0 20px 80px oklch(0.05 0.04 150 / 35%);
   }
 
