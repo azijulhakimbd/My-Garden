@@ -359,3 +359,105 @@
     @apply border-white/10 bg-white/[0.045];
   }
 }
+/* =========================================================
+   Google Translate
+   ========================================================= */
+
+.google-translate {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Hide Google's default branding text */
+.google-translate .goog-te-gadget {
+  font-family: inherit !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+
+/* Language select */
+.google-translate .goog-te-combo {
+  appearance: none;
+  -webkit-appearance: none;
+
+  height: 34px;
+  min-width: 108px;
+
+  margin: 0 !important;
+  padding: 0 28px 0 30px;
+
+  border: 0 !important;
+  outline: none !important;
+
+  background: transparent !important;
+
+  color: rgb(51 65 85);
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Hover */
+.google-translate .goog-te-combo:hover {
+  color: rgb(4 120 87);
+}
+
+/* Focus */
+.google-translate .goog-te-combo:focus-visible {
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px rgb(16 185 129 / 0.2);
+}
+
+/* Dark mode */
+.dark .google-translate .goog-te-combo {
+  color: rgb(226 232 240);
+}
+
+.dark .google-translate .goog-te-combo:hover {
+  color: rgb(52 211 153);
+}
+
+/* Google sometimes injects iframe/branding elements */
+.google-translate .goog-te-gadget span {
+  display: none !important;
+}
+
+/* Prevent Google Translate top banner from shifting the page */
+body {
+  top: 0 !important;
+}
+
+.goog-te-banner-frame,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+/* Hide Google branding */
+.goog-logo-link {
+  display: none !important;
+}
+
+.goog-te-gadget-icon {
+  display: none !important;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .google-translate .goog-te-combo {
+    min-width: 92px;
+    padding-left: 29px;
+    padding-right: 22px;
+    font-size: 11px !important;
+  }
+
+  .google-translate > div {
+    border-radius: 10px;
+  }
+}
+

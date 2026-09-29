@@ -18,11 +18,17 @@ const notoSansBengali = Noto_Sans_Bengali({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
 });
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 export const metadata: Metadata = {
   title: { default: "My Garden", template: "%s | My Garden" },
@@ -46,7 +52,6 @@ export default function RootLayout({
         "antialiased",
       )}
     >
-      
       <body
         className={cn(
           "min-h-full",
@@ -56,16 +61,14 @@ export default function RootLayout({
           "antialiased",
         )}
       >
-       
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          
           <div className="flex min-h-screen flex-col">
-           
+            
             <Navbar /> <main className="flex-1">{children}</main>
             <Footer />
           </div>

@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Leaf, Menu, Sprout } from "lucide-react";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
 import { ModeToggle } from "@/components/mode-toggle";
+import { GoogleTranslate } from "@/components/google-translate";
 
 const navItems = [
   { label: "হোম", href: "/" },
@@ -19,16 +18,25 @@ const navItems = [
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
+
+  const isActiveRoute = (href: string) => {
+    // Home should only be active on the exact root route
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    // For nested routes:
+    // /garden/settings -> /garden is still active
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
         <nav className="flex h-16 items-center justify-between rounded-2xl border border-emerald-950/10 bg-white/80 px-4 shadow-lg shadow-emerald-950/5 backdrop-blur-xl transition-colors dark:border-white/10 dark:bg-slate-950/75 sm:px-6">
-
           {/* Logo */}
-          <Link
-            href="/"
-            className="group flex items-center gap-2.5"
-          >
+          <Link href="/" className="group flex items-center gap-2.5">
             <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 transition-transform duration-300 group-hover:scale-105">
               <Leaf className="size-5" />
             </span>
@@ -46,23 +54,35 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden items-center gap-1 md:flex">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  index === 0
-                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActiveRoute(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                    active
+                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+                  }`}
+                >
+                  {item.label}
+
+                  {/* Active indicator */}
+                  {active && (
+                    <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Actions */}
           <div className="hidden items-center gap-2 md:flex">
+            <GoogleTranslate />
+
             <ModeToggle />
 
             <Link
@@ -83,6 +103,8 @@ export function Navbar() {
 
           {/* Mobile */}
           <div className="flex items-center gap-2 md:hidden">
+            <GoogleTranslate />
+
             <ModeToggle />
 
             <Sheet>
@@ -98,7 +120,6 @@ export function Navbar() {
                 className="w-[300px] border-l border-emerald-950/10 bg-white dark:border-white/10 dark:bg-slate-950"
               >
                 <div className="mt-8 flex flex-col">
-
                   {/* Mobile Logo */}
                   <div className="mb-8 flex items-center gap-3">
                     <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-600 text-white">
@@ -118,15 +139,30 @@ export function Navbar() {
 
                   {/* Mobile Links */}
                   <div className="flex flex-col gap-1">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="rounded-xl px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-300 dark:hover:bg-emerald-500/10 dark:hover:text-emerald-400"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
+                    {navItems.map((item) => {
+                      const active = isActiveRoute(item.href);
+
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          aria-current={active ? "page" : undefined}
+                          className={`rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                            active
+                              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400"
+                              : "text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-300 dark:hover:bg-emerald-500/10 dark:hover:text-emerald-400"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>{item.label}</span>
+
+                            {active && (
+                              <span className="size-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                            )}
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
 
                   {/* Mobile Actions */}
