@@ -1075,6 +1075,46 @@ export const plants: Plant[] = [
       "গাছ ছোট",
     ),
   },
+  {
+    id: 47,
+    name: "বারোমাসি বরই",
+    quantity: 1,
+    category: "ফলজ",
+    plantedDate: "০২ অক্টোবর ২০২৬",
+    price: 100,
+    result: "গাছ ছোট",
+    status: "ফল হয়েছে ও ফুল হয়েছে",
+    growthStage: "ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
+    icon: "🍏",
+    image: "",
+    timeline: createTimeline(
+      47,
+      "০২ অক্টোবর ২০২৬",
+      "বারোমাসি বরই",
+      "ফল হয়েছে ও ফুল হয়েছে",
+    ),
+  },
+  {
+    id: 48,
+    name: "মালবেরি",
+    quantity: 1,
+    category: "ফলজ",
+    plantedDate: "০২ অক্টোবর ২০২৬",
+    price: 100,
+    result: "গাছ ছোট",
+    status: "গাছ ছোট",
+    growthStage: "ছোট",
+    nursery: "চান মিয়া, গোজাকুড়া",
+    icon: "🌸",
+    image: "",
+    timeline: createTimeline(
+      48,
+      "০২ অক্টোবর ২০২৬",
+      "মালবেরি",
+      "গাছ ছোট",
+    ),
+  },
 ];
 
 /* ---------------------------------------------------------
@@ -1095,17 +1135,7 @@ export const totalPlants = plants.reduce(
   0,
 );
 
-/**
- * ব্যবহারকারীর দেওয়া মোট খরচ
- *
- * গুরুত্বপূর্ণ:
- * 'ঐ', 'ফ্রি', চারা/বীজ ইত্যাদির কারণে
- * শুধু price × quantity দিয়ে প্রকৃত মোট খরচ
- * নির্ভুলভাবে বের করা যাবে না।
- *
- * তাই ব্যবহারকারীর দেওয়া মোট:
- * ২,৯৬৫ টাকা
- */
+
 export const totalCost = 2965;
 
 export const categories = Array.from(
