@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
   ChevronRight,
@@ -15,7 +15,12 @@ import {
 } from "lucide-react";
 
 
-import { plants, type Plant } from "../../public/data/plant";
+import {
+  plants as seedPlants,
+  mergeStoredPlants,
+  type Plant,
+  type StoredPlant,
+} from "../../public/data/plant";
 
 const categoryIcons: Record<string, typeof Leaf> = {
   ফলজ: TreePine,
@@ -36,13 +41,30 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function GardenPage() {
+  const [plants, setPlants] = useState(seedPlants);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("সব");
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
 
+  useEffect(() => {
+    async function loadPlants() {
+      try {
+        const response = await fetch("/api/plants", { cache: "no-store" });
+        const result = await response.json();
+        if (response.ok) {
+          setPlants(mergeStoredPlants(result.data as StoredPlant[]));
+        }
+      } catch {
+        // Keep the bundled garden records available when MongoDB is offline.
+      }
+    }
+
+    void loadPlants();
+  }, []);
+
   const categories = useMemo(
     () => ["সব", ...Array.from(new Set(plants.map((plant) => plant.category)))],
-    [],
+    [plants],
   );
 
   const filteredPlants = useMemo(() => {
@@ -56,7 +78,7 @@ export default function GardenPage() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [search, category]);
+  }, [plants, search, category]);
 
   const totalQuantity = plants.reduce(
     (total, plant) => total + plant.quantity,

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
  
@@ -50,7 +50,7 @@ type TaskStatus = "pending" | "in-progress" | "completed";
 type TaskPriority = "low" | "medium" | "high";
 
 type GardenTask = {
-  id: number;
+  _id: string;
   title: string;
   description: string;
   category: string;
@@ -58,45 +58,6 @@ type GardenTask = {
   status: TaskStatus;
   priority: TaskPriority;
 };
-
-const initialTasks: GardenTask[] = [
-  {
-    id: 1,
-    title: "আম গাছে পানি দেওয়া",
-    description: "সকালে আম গাছের গোড়ায় পর্যাপ্ত পানি দিতে হবে।",
-    category: "পানি দেওয়া",
-    dueDate: "আজ",
-    status: "pending",
-    priority: "high",
-  },
-  {
-    id: 2,
-    title: "লেবু গাছের ডাল ছাঁটাই",
-    description: "শুকনো ও অতিরিক্ত ডালগুলো ছেঁটে ফেলতে হবে।",
-    category: "পরিচর্যা",
-    dueDate: "আজ",
-    status: "in-progress",
-    priority: "medium",
-  },
-  {
-    id: 3,
-    title: "গাছে জৈব সার দেওয়া",
-    description: "ফলজ গাছগুলোতে প্রয়োজন অনুযায়ী জৈব সার প্রয়োগ করতে হবে।",
-    category: "সার প্রয়োগ",
-    dueDate: "আগামীকাল",
-    status: "pending",
-    priority: "medium",
-  },
-  {
-    id: 4,
-    title: "টবের মাটি পরিবর্তন",
-    description: "ফুলের টবগুলোর পুরোনো মাটি পরিবর্তন করতে হবে।",
-    category: "মাটি",
-    dueDate: "১২ অক্টোবর",
-    status: "completed",
-    priority: "low",
-  },
-];
 
 const statusLabels: Record<TaskStatus, string> = {
   pending: "অপেক্ষমাণ",
@@ -111,7 +72,9 @@ const priorityLabels: Record<TaskPriority, string> = {
 };
 
 export default function TasksPage() {
-  const [tasks, setTasks] = useState<GardenTask[]>(initialTasks);
+  const [tasks, setTasks] = useState<GardenTask[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [filter, setFilter] = useState<"all" | TaskStatus>("all");
   const [open, setOpen] = useState(false);
 
@@ -122,6 +85,23 @@ export default function TasksPage() {
     dueDate: "আজ",
     priority: "medium" as TaskPriority,
   });
+
+  useEffect(() => {
+    async function loadTasks() {
+      try {
+        const response = await fetch("/api/tasks", { cache: "no-store" });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message);
+        setTasks(result.data);
+      } catch {
+        setError("কাজগুলো লোড করা যায়নি। MongoDB সংযোগ পরীক্ষা করুন।");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void loadTasks();
+  }, []);
 
   const filteredTasks = useMemo(() => {
     if (filter === "all") return tasks;
@@ -136,38 +116,55 @@ export default function TasksPage() {
     completed: tasks.filter((task) => task.status === "completed").length,
   };
 
-  function toggleTask(id: number) {
-    setTasks((current) =>
-      current.map((task) =>
-        task.id === id
-          ? {
-              ...task,
-              status:
-                task.status === "completed" ? "pending" : "completed",
-            }
-          : task,
-      ),
-    );
+  async function toggleTask(id: string) {
+    const task = tasks.find((item) => item._id === id);
+    if (!task) return;
+
+    const status = task.status === "completed" ? "pending" : "completed";
+    try {
+      const response = await fetch(`/api/tasks/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      setTasks((current) => current.map((item) => item._id === id ? result.data : item));
+      setError("");
+    } catch {
+      setError("কাজের অবস্থা সংরক্ষণ করা যায়নি।");
+    }
   }
 
-  function deleteTask(id: number) {
-    setTasks((current) => current.filter((task) => task.id !== id));
+  async function deleteTask(id: string) {
+    try {
+      const response = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      setTasks((current) => current.filter((task) => task._id !== id));
+      setError("");
+    } catch {
+      setError("কাজটি মুছে ফেলা যায়নি।");
+    }
   }
 
-  function addTask() {
+  async function addTask() {
     if (!newTask.title.trim()) return;
 
-    const task: GardenTask = {
-      id: Date.now(),
-      title: newTask.title,
-      description: newTask.description,
-      category: newTask.category,
-      dueDate: newTask.dueDate,
-      status: "pending",
-      priority: newTask.priority,
-    };
-
-    setTasks((current) => [task, ...current]);
+    try {
+      const response = await fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTask),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message);
+      setTasks((current) => [result.data, ...current]);
+      setError("");
+    } catch {
+      setError("কাজটি সংরক্ষণ করা যায়নি। MongoDB সংযোগ পরীক্ষা করুন।");
+      return;
+    }
 
     setNewTask({
       title: "",
@@ -339,6 +336,12 @@ export default function TasksPage() {
         </section>
 
         {/* Statistics */}
+        {error && (
+          <p role="alert" className="mb-5 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+            {error}
+          </p>
+        )}
+
         <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="মোট কাজ"
@@ -404,7 +407,9 @@ export default function TasksPage() {
 
         {/* Tasks */}
         <section>
-          {filteredTasks.length === 0 ? (
+          {loading ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">কাজ লোড হচ্ছে...</p>
+          ) : filteredTasks.length === 0 ? (
             <Card className="border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="mb-4 rounded-full bg-muted p-4">
@@ -424,10 +429,10 @@ export default function TasksPage() {
             <div className="grid gap-4">
               {filteredTasks.map((task) => (
                 <TaskCard
-                  key={task.id}
+                  key={task._id}
                   task={task}
-                  onToggle={() => toggleTask(task.id)}
-                  onDelete={() => deleteTask(task.id)}
+                  onToggle={() => void toggleTask(task._id)}
+                  onDelete={() => void deleteTask(task._id)}
                 />
               ))}
             </div>

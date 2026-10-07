@@ -37,7 +37,7 @@ export interface PlantTimelineEvent {
 }
 
 export interface Plant {
-  id: number;
+  id: number | string;
   name: string;
   quantity: number;
   category: PlantCategory;
@@ -1120,6 +1120,84 @@ export const plants: Plant[] = [
 /* ---------------------------------------------------------
    Garden Statistics
 --------------------------------------------------------- */
+
+export type StoredPlant = {
+  _id: string;
+  name: string;
+  quantity?: number;
+  category: PlantCategory;
+  plantedAt?: string;
+  scientificName?: string;
+  status?: string;
+  description?: string;
+  image?: string;
+  location?: string;
+  result?: string;
+  nursery?: string;
+  note?: string;
+  variety?: string;
+  price?: number;
+  icon?: string;
+};
+
+export function mergeStoredPlants(records: StoredPlant[]): Plant[] {
+  const recordsByName = new Map(
+    records.map((record) => [record.name.trim().toLocaleLowerCase(), record]),
+  );
+  const seedNames = new Set(
+    plants.map((plant) => plant.name.trim().toLocaleLowerCase()),
+  );
+
+  const mergedSeeds = plants.map((seed) => {
+    const record = recordsByName.get(seed.name.trim().toLocaleLowerCase());
+    if (!record) return seed;
+
+    return {
+      ...seed,
+      id: record._id,
+      quantity: record.quantity ?? seed.quantity,
+      category: record.category,
+      plantedDate: record.plantedAt
+        ? new Date(record.plantedAt).toLocaleDateString("bn-BD")
+        : seed.plantedDate,
+      scientificName: record.scientificName || seed.scientificName,
+      status: (record.status || seed.status) as PlantStatus | undefined,
+      result: record.result || record.description || seed.result,
+      image: record.image || seed.image,
+      location: record.location || seed.location,
+      nursery: record.nursery || seed.nursery,
+      note: record.note || record.description || seed.note,
+      variety: record.variety || seed.variety,
+      price: record.price ?? seed.price,
+      icon: record.icon || seed.icon,
+    };
+  });
+
+  const newRecords = records
+    .filter((record) => !seedNames.has(record.name.trim().toLocaleLowerCase()))
+    .map((record): Plant => ({
+      id: record._id,
+      name: record.name,
+      quantity: record.quantity ?? 1,
+      category: record.category,
+      plantedDate: record.plantedAt
+        ? new Date(record.plantedAt).toLocaleDateString("bn-BD")
+        : "যোগ করা হয়নি",
+      scientificName: record.scientificName,
+      status: record.status as PlantStatus | undefined,
+      result: record.result || record.description,
+      image: record.image,
+      location: record.location,
+      nursery: record.nursery,
+      note: record.note || record.description,
+      variety: record.variety,
+      price: record.price,
+      icon: record.icon || "🌱",
+      timeline: [],
+    }));
+
+  return [...mergedSeeds, ...newRecords];
+}
 
 /**
  * মোট আলাদা Plant record

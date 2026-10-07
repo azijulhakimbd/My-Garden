@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -20,13 +20,8 @@ import { Input } from "@/components/ui/input";
 
 import {
   plants,
-  categories,
-  totalPlants,
-  totalPlantVarieties,
-  floweringPlants,
-  fruitingPlants,
-  smallPlants,
-  deadPlants,
+  mergeStoredPlants,
+  type StoredPlant,
   type Plant,
   type PlantCategory,
 } from "../../public/data/plant";
@@ -545,6 +540,7 @@ function PlantDetails({
 ========================================================= */
 
 export default function PlantsPage() {
+  const [gardenPlants, setGardenPlants] = useState(plants);
   const [search, setSearch] = useState("");
 
   const [selectedCategory, setSelectedCategory] = useState<
@@ -558,10 +554,47 @@ export default function PlantsPage() {
   const [selectedPlant, setSelectedPlant] =
     useState<Plant | null>(null);
 
+  useEffect(() => {
+    async function loadPlants() {
+      try {
+        const response = await fetch("/api/plants", { cache: "no-store" });
+        const result = await response.json();
+        if (response.ok) {
+          setGardenPlants(mergeStoredPlants(result.data as StoredPlant[]));
+        }
+      } catch {
+        // Keep the bundled garden records available when MongoDB is offline.
+      }
+    }
+
+    void loadPlants();
+  }, []);
+
+  const categories = useMemo(
+    () => Array.from(new Set(gardenPlants.map((plant) => plant.category))),
+    [gardenPlants],
+  );
+  const totalPlants = gardenPlants.reduce(
+    (total, plant) => total + plant.quantity,
+    0,
+  );
+  const fruitingPlants = gardenPlants.filter((plant) =>
+    `${plant.result ?? ""} ${plant.status ?? ""}`.includes("ফল হয়েছে"),
+  );
+  const floweringPlants = gardenPlants.filter((plant) =>
+    `${plant.result ?? ""} ${plant.status ?? ""}`.includes("ফুল"),
+  );
+  const smallPlants = gardenPlants.filter((plant) =>
+    `${plant.result ?? ""} ${plant.status ?? ""}`.includes("গাছ ছোট"),
+  );
+  const deadPlants = gardenPlants.filter((plant) =>
+    `${plant.result ?? ""} ${plant.status ?? ""}`.includes("মরে গেছে"),
+  );
+
   const statusOptions = useMemo(() => {
     return Array.from(
       new Set(
-        plants
+        gardenPlants
           .map((plant) => plant.status)
           .filter(
             (status): status is NonNullable<Plant["status"]> =>
@@ -569,12 +602,12 @@ export default function PlantsPage() {
           ),
       ),
     );
-  }, []);
+  }, [gardenPlants]);
 
   const filteredPlants = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return plants.filter((plant) => {
+    return gardenPlants.filter((plant) => {
       const matchesSearch =
         !query ||
         plant.name.toLowerCase().includes(query) ||
@@ -597,7 +630,7 @@ export default function PlantsPage() {
         matchesStatus
       );
     });
-  }, [search, selectedCategory, selectedStatus]);
+  }, [gardenPlants, search, selectedCategory, selectedStatus]);
 
   const hasFilters =
     Boolean(search) ||
@@ -645,7 +678,7 @@ export default function PlantsPage() {
           {/* Stats */}
           <div className="mt-7 grid grid-cols-2 gap-2.5 sm:mt-10 sm:grid-cols-3 sm:gap-3 lg:grid-cols-6">
             <StatCard
-              value={totalPlantVarieties}
+              value={gardenPlants.length}
               label="Plant Records"
               icon={<Trees className="h-5 w-5" />}
             />
