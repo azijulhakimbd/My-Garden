@@ -30,14 +30,15 @@ export function GoogleTranslate() {
 
   useEffect(() => {
     const initializeTranslate = () => {
-      if (!window.google?.translate?.TranslateElement) return;
+      const TranslateElement = window.google?.translate?.TranslateElement;
+      if (!TranslateElement) return;
 
       document
         .querySelectorAll<HTMLElement>(".google-translate-element")
         .forEach((element) => {
           if (element.dataset.initialized === "true") return;
 
-          new window.google.translate.TranslateElement(
+          new TranslateElement(
             {
               pageLanguage: "bn",
               includedLanguages: "bn,en",
