@@ -4,13 +4,13 @@
 import { useMemo, useState } from "react";
 import {
   CalendarDays,
-  Check,
+ 
   CheckCircle2,
   Circle,
   Clock3,
   Droplets,
   Leaf,
-  MoreHorizontal,
+ 
   Plus,
   Sprout,
   Trash2,
