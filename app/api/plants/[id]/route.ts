@@ -1,29 +1,32 @@
-
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 
 import { connectDB } from "@/lib/mongodb";
 import { Plant } from "@/models/plant";
+import { Activity } from "@/models/activity";
 
-type RouteContext = {
+type Context = {
   params: Promise<{
     id: string;
   }>;
 };
 
-// GET single plant
+function isValidId(id: string) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
 export async function GET(
-  _request: Request,
-  context: RouteContext,
+  _request: NextRequest,
+  context: Context,
 ) {
   try {
     const { id } = await context.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!isValidId(id)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid plant ID.",
+          message: "Invalid plant ID",
         },
         { status: 400 },
       );
@@ -37,7 +40,7 @@ export async function GET(
       return NextResponse.json(
         {
           success: false,
-          message: "Plant not found.",
+          message: "Plant not found",
         },
         { status: 404 },
       );
@@ -48,60 +51,66 @@ export async function GET(
       data: plant,
     });
   } catch (error) {
-    console.error("GET /api/plants/[id] error:", error);
+    console.error("GET /api/plants/[id]:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch plant.",
+        message: "Failed to fetch plant",
       },
       { status: 500 },
     );
   }
 }
 
-// UPDATE plant
 export async function PUT(
-  request: Request,
-  context: RouteContext,
+  request: NextRequest,
+  context: Context,
 ) {
   try {
     const { id } = await context.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!isValidId(id)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid plant ID.",
+          message: "Invalid plant ID",
         },
         { status: 400 },
       );
     }
 
+    await connectDB();
+
     const body = await request.json();
 
-    await connectDB();
+    if (!body.name?.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Plant name is required",
+        },
+        { status: 400 },
+      );
+    }
 
     const plant = await Plant.findByIdAndUpdate(
       id,
       {
-        name: body.name,
-        quantity: body.quantity ?? 1,
-        scientificName: body.scientificName ?? "",
-        category: body.category,
-        status: body.status,
-        description: body.description ?? "",
-        image: body.image ?? "",
-        location: body.location ?? "",
-        result: body.result ?? body.description ?? "",
-        nursery: body.nursery ?? "",
-        note: body.note ?? "",
-        variety: body.variety ?? "",
-        price: body.price,
-        icon: body.icon ?? "🌱",
-        plantedAt: body.plantedAt
-          ? new Date(body.plantedAt)
-          : undefined,
+        $set: {
+          name: body.name.trim(),
+          scientificName:
+            body.scientificName?.trim() || "",
+          category: body.category?.trim() || "",
+          quantity: Number(body.quantity ?? 1),
+          status: body.status || "healthy",
+          description:
+            body.description?.trim() || "",
+          image: body.image?.trim() || "",
+          location: body.location?.trim() || "",
+          plantedAt:
+            body.plantedAt || undefined,
+        },
       },
       {
         new: true,
@@ -113,43 +122,50 @@ export async function PUT(
       return NextResponse.json(
         {
           success: false,
-          message: "Plant not found.",
+          message: "Plant not found",
         },
         { status: 404 },
       );
     }
 
+    await Activity.create({
+      action: "plant_updated",
+      description: `গাছ আপডেট করা হয়েছে: ${plant.name}`,
+      type: "plant",
+      metadata: {
+        plantId: plant._id.toString(),
+      },
+    });
+
     return NextResponse.json({
       success: true,
-      message: "Plant updated successfully.",
       data: plant,
     });
   } catch (error) {
-    console.error("PUT /api/plants/[id] error:", error);
+    console.error("PUT /api/plants/[id]:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to update plant.",
+        message: "Failed to update plant",
       },
       { status: 500 },
     );
   }
 }
 
-// DELETE plant
 export async function DELETE(
-  _request: Request,
-  context: RouteContext,
+  _request: NextRequest,
+  context: Context,
 ) {
   try {
     const { id } = await context.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!isValidId(id)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid plant ID.",
+          message: "Invalid plant ID",
         },
         { status: 400 },
       );
@@ -163,23 +179,32 @@ export async function DELETE(
       return NextResponse.json(
         {
           success: false,
-          message: "Plant not found.",
+          message: "Plant not found",
         },
         { status: 404 },
       );
     }
 
+    await Activity.create({
+      action: "plant_deleted",
+      description: `গাছ মুছে ফেলা হয়েছে: ${plant.name}`,
+      type: "plant",
+      metadata: {
+        plantId: plant._id.toString(),
+      },
+    });
+
     return NextResponse.json({
       success: true,
-      message: "Plant deleted successfully.",
+      message: "Plant deleted successfully",
     });
   } catch (error) {
-    console.error("DELETE /api/plants/[id] error:", error);
+    console.error("DELETE /api/plants/[id]:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to delete plant.",
+        message: "Failed to delete plant",
       },
       { status: 500 },
     );

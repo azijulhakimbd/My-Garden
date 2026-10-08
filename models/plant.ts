@@ -1,27 +1,19 @@
+import mongoose, { Schema, type Document, type Model } from "mongoose";
 
-import mongoose, { Schema, type Model } from "mongoose";
-
-export type PlantStatus =
-  | "ফল হয়েছে"
-  | "ফল হয়নি"
-  | "ফুল হয়েছে"
-  | "গাছ ছোট"
-  | "গাছ মরে গেছে";
-
-export type PlantCategory =
-  | "ফলজ"
-  | "সাইট্রাস"
-  | "ঔষধি"
-  | "মসলা"
-  | "আম"
-  | "ফুল";
-
-export interface IPlant {
+export interface IPlant extends Document {
   name: string;
   quantity: number;
+  category:
+    | "ফলজ"
+    | "সাইট্রাস"
+    | "ঔষধি"
+    | "মসলা"
+    | "আম"
+    | "ফুল";
+
+  plantedAt?: Date | null;
   scientificName?: string;
-  category: PlantCategory;
-  status: PlantStatus;
+  status?: string;
   description?: string;
   image?: string;
   location?: string;
@@ -31,7 +23,7 @@ export interface IPlant {
   variety?: string;
   price?: number;
   icon?: string;
-  plantedAt?: Date;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,8 +38,19 @@ const PlantSchema = new Schema<IPlant>(
 
     quantity: {
       type: Number,
-      min: 1,
       default: 1,
+      min: 0,
+    },
+
+    category: {
+      type: String,
+      required: true,
+      enum: ["ফলজ", "সাইট্রাস", "ঔষধি", "মসলা", "আম", "ফুল"],
+    },
+
+    plantedAt: {
+      type: Date,
+      default: null,
     },
 
     scientificName: {
@@ -56,30 +59,10 @@ const PlantSchema = new Schema<IPlant>(
       default: "",
     },
 
-    category: {
-      type: String,
-      required: true,
-      enum: [
-        "ফলজ",
-        "সাইট্রাস",
-        "ঔষধি",
-        "মসলা",
-        "আম",
-        "ফুল",
-      ],
-    },
-
     status: {
       type: String,
-      required: true,
-      enum: [
-        "ফল হয়েছে",
-        "ফল হয়নি",
-        "ফুল হয়েছে",
-        "গাছ ছোট",
-        "গাছ মরে গেছে",
-      ],
-      default: "গাছ ছোট",
+      trim: true,
+      default: "",
     },
 
     description: {
@@ -100,19 +83,44 @@ const PlantSchema = new Schema<IPlant>(
       default: "",
     },
 
-    result: { type: String, trim: true, default: "" },
-    nursery: { type: String, trim: true, default: "" },
-    note: { type: String, trim: true, default: "" },
-    variety: { type: String, trim: true, default: "" },
-    price: { type: Number, min: 0 },
-    icon: { type: String, trim: true, default: "🌱" },
+    result: {
+      type: String,
+      trim: true,
+      default: "",
+    },
 
-    plantedAt: {
-      type: Date,
+    nursery: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    note: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    variety: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    price: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    icon: {
+      type: String,
+      default: "🌱",
     },
   },
   {
     timestamps: true,
+    collection: "plants",
   },
 );
 

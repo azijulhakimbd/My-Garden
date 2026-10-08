@@ -1,39 +1,71 @@
-import mongoose, { Schema, type Model } from "mongoose";
+import mongoose, { Schema, type Document, type Model } from "mongoose";
 
-export type TaskStatus = "pending" | "in-progress" | "completed";
-export type TaskPriority = "low" | "medium" | "high";
-
-export interface IGardenTask {
+export interface ITask extends Document {
   title: string;
-  description: string;
-  category: string;
-  dueDate: string;
-  status: TaskStatus;
-  priority: TaskPriority;
+  description?: string;
+  category?: string;
+  dueDate?: Date;
+  status: "pending" | "in-progress" | "completed";
+  priority: "low" | "medium" | "high";
+  plantId?: mongoose.Types.ObjectId;
+  notes?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const GardenTaskSchema = new Schema<IGardenTask>(
+const TaskSchema = new Schema<ITask>(
   {
-    title: { type: String, required: true, trim: true },
-    description: { type: String, trim: true, default: "" },
-    category: { type: String, required: true, trim: true },
-    dueDate: { type: String, required: true, trim: true },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    description: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    category: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    dueDate: {
+      type: Date,
+    },
+
     status: {
       type: String,
       enum: ["pending", "in-progress", "completed"],
       default: "pending",
     },
+
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
       default: "medium",
     },
+
+    plantId: {
+      type: Schema.Types.ObjectId,
+      ref: "Plant",
+      default: null,
+    },
+
+    notes: {
+      type: String,
+      trim: true,
+      default: "",
+    },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
-export const GardenTask: Model<IGardenTask> =
-  mongoose.models.GardenTask ||
-  mongoose.model<IGardenTask>("GardenTask", GardenTaskSchema);
+export const Task: Model<ITask> =
+  mongoose.models.Task ||
+  mongoose.model<ITask>("Task", TaskSchema);
