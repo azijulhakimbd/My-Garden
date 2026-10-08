@@ -1,12 +1,18 @@
-import mongoose, { Schema, type Document, type Model } from "mongoose";
+
+import mongoose, {
+  Schema,
+  type Document,
+  type Model,
+} from "mongoose";
 
 export interface IAIChat extends Document {
   question: string;
   answer: string;
   provider?: string;
-  model?: string;
+  modelName?: string;
   userId?: mongoose.Types.ObjectId;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const AIChatSchema = new Schema<IAIChat>(
@@ -27,7 +33,7 @@ const AIChatSchema = new Schema<IAIChat>(
       default: "Gemini",
     },
 
-    model: {
+    modelName: {
       type: String,
       default: "",
     },
