@@ -4,28 +4,19 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
- 
   CheckCircle2,
   Circle,
   Clock3,
   Droplets,
   Leaf,
- 
   Plus,
   Sprout,
   Trash2,
-  X,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,

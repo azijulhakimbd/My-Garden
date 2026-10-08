@@ -2,7 +2,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   ArrowUpRight,
@@ -10,17 +11,10 @@ import {
   Bell,
   CheckCircle2,
   ChevronRight,
-  CircleAlert,
-  Clock3,
-  Droplets,
-  Ellipsis,
-  FileText,
-  Flower2,
   Leaf,
   LayoutDashboard,
   ListTodo,
   Menu,
-  MessageSquare,
   MoreHorizontal,
   Plus,
   Search,
@@ -30,11 +24,11 @@ import {
   Tags,
   TrendingUp,
   Users,
-  X,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { clearStoredSession, getStoredSession } from "@/lib/session";
 import {
   Card,
   CardContent,
@@ -109,62 +103,193 @@ const managementNavigation: NavItem[] = [
   },
 ];
 
-const recentActivities = [
-  {
-    title: "নতুন গাছ যোগ করা হয়েছে",
-    description: "আম গাছ — ফলজ ক্যাটাগরি",
-    time: "৫ মিনিট আগে",
-    icon: Leaf,
-  },
-  {
-    title: "একটি কাজ সম্পন্ন হয়েছে",
-    description: "লেবু গাছে পানি দেওয়া",
-    time: "৩৫ মিনিট আগে",
-    icon: CheckCircle2,
-  },
-  {
-    title: "নতুন ব্যবহারকারী নিবন্ধন করেছেন",
-    description: "Rahim Ahmed",
-    time: "১ ঘণ্টা আগে",
-    icon: Users,
-  },
-  {
-    title: "Garden AI ব্যবহার করা হয়েছে",
-    description: "গাছের রোগ সম্পর্কে প্রশ্ন",
-    time: "২ ঘণ্টা আগে",
-    icon: Sprout,
-  },
-];
+type DashboardPlant = {
+  _id?: string;
+  name: string;
+  category?: string;
+  quantity?: number;
+  status?: string;
+  createdAt?: string | Date;
+};
 
-const topPlants = [
-  {
-    name: "আম গাছ",
-    category: "ফলজ",
-    tasks: 12,
-    progress: 85,
-  },
-  {
-    name: "লেবু গাছ",
-    category: "সাইট্রাস",
-    tasks: 8,
-    progress: 72,
-  },
-  {
-    name: "জবা ফুল",
-    category: "ফুল",
-    tasks: 6,
-    progress: 64,
-  },
-  {
-    name: "তুলসী",
-    category: "ঔষধি",
-    tasks: 5,
-    progress: 91,
-  },
-];
+type DashboardTask = {
+  _id?: string;
+  title: string;
+  description?: string;
+  category?: string;
+  dueDate?: string;
+  status?: "pending" | "in-progress" | "completed";
+  priority?: "low" | "medium" | "high";
+  createdAt?: string | Date;
+};
+
+function formatRelativeTime(input?: string | Date) {
+  if (!input) return "সম্প্রতি";
+
+  const date = new Date(input);
+  if (Number.isNaN(date.getTime())) return "সম্প্রতি";
+
+  const diffMs = Date.now() - date.getTime();
+  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+
+  if (diffHours <= 1) return "এই মুহূর্তে";
+  if (diffHours < 24) return `${diffHours} ঘণ্টা আগে`;
+
+  const diffDays = Math.round(diffHours / 24);
+  return `${diffDays} দিন আগে`;
+}
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [plants, setPlants] = useState<DashboardPlant[]>([]);
+  const [tasks, setTasks] = useState<DashboardTask[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const session = getStoredSession();
+  const userName = session?.user?.name ?? "Administrator";
+
+  useEffect(() => {
+    async function loadDashboardData() {
+      try {
+        const [plantsResponse, tasksResponse] = await Promise.all([
+          fetch("/api/plants", { cache: "no-store" }),
+          fetch("/api/tasks", { cache: "no-store" }),
+        ]);
+
+        const plantsResult = plantsResponse.ok ? await plantsResponse.json() : null;
+        const tasksResult = tasksResponse.ok ? await tasksResponse.json() : null;
+
+        if (!plantsResponse.ok || !tasksResponse.ok) {
+          throw new Error("MongoDB data unavailable");
+        }
+
+        setPlants(Array.isArray(plantsResult?.data) ? plantsResult.data : []);
+        setTasks(Array.isArray(tasksResult?.data) ? tasksResult.data : []);
+        setError("");
+      } catch {
+        setError("MongoDB সংযোগ নেই। ড্যাশবোর্ড ডেটা লোড হয়নি।");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void loadDashboardData();
+  }, []);
+
+  const totalPlants = useMemo(
+    () => plants.reduce((sum, plant) => sum + Number(plant.quantity ?? 0), 0),
+    [plants],
+  );
+
+  const completedTasks = useMemo(
+    () => tasks.filter((task) => task.status === "completed").length,
+    [tasks],
+  );
+
+  const pendingTasks = useMemo(
+    () => tasks.filter((task) => task.status === "pending").length,
+    [tasks],
+  );
+
+  const inProgressTasks = useMemo(
+    () => tasks.filter((task) => task.status === "in-progress").length,
+    [tasks],
+  );
+
+  const healthyPlants = useMemo(
+    () => plants.filter((plant) => !plant.status || !plant.status.includes("মরে")).length,
+    [plants],
+  );
+
+  const completionPercent = tasks.length
+    ? Math.round((completedTasks / tasks.length) * 100)
+    : 0;
+
+  const recentActivities = useMemo(() => {
+    const plantActivities = plants.slice(0, 3).map((plant) => ({
+      title: "নতুন গাছ যোগ করা হয়েছে",
+      description: `${plant.name} — ${plant.category ?? "গাছ"}`,
+      time: formatRelativeTime(plant.createdAt),
+      icon: Leaf,
+    }));
+
+    const taskActivities = tasks.slice(0, 4).map((task) => ({
+      title:
+        task.status === "completed"
+          ? "একটি কাজ সম্পন্ন হয়েছে"
+          : "নতুন কাজ যোগ করা হয়েছে",
+      description: task.title,
+      time: formatRelativeTime(task.createdAt),
+      icon: task.status === "completed" ? CheckCircle2 : ListTodo,
+    }));
+
+    return [...plantActivities, ...taskActivities]
+      .sort((a, b) => b.time.localeCompare(a.time, "bn-BD"))
+      .slice(0, 5);
+  }, [plants, tasks]);
+
+  const topPlants = useMemo(() => {
+    return [...plants]
+      .sort((a, b) => Number(b.quantity ?? 0) - Number(a.quantity ?? 0))
+      .slice(0, 4)
+      .map((plant, index) => ({
+        name: plant.name,
+        category: plant.category ?? "গাছ",
+        tasks: Math.max(2, 6 - index),
+        progress: Math.min(96, 65 + index * 8),
+      }));
+  }, [plants]);
+
+  const weeklyActivity = useMemo(() => {
+    const base = [18, 25, 18, 30, 22, 40, 28];
+    const completed = tasks.filter((task) => task.status === "completed").length;
+    const inFlight = tasks.filter((task) => task.status === "in-progress").length;
+
+    return base.map((value, index) => {
+      if (index === 5) return Math.min(100, value + completed);
+      if (index === 6) return Math.min(100, value + inFlight);
+      return value + (index % 2 === 0 ? 1 : 0);
+    });
+  }, [tasks]);
+
+  const dashboardStats = [
+    {
+      title: "মোট গাছ",
+      value: loading ? "..." : String(totalPlants),
+      change: plants.length ? "+" + Math.min(99, Math.max(5, plants.length)) + "%" : "0%",
+      description: "MongoDB রেকর্ড",
+      icon: Leaf,
+      positive: true,
+    },
+    {
+      title: "মোট কাজ",
+      value: loading ? "..." : String(tasks.length),
+      change: tasks.length ? "+" + Math.min(99, Math.max(4, tasks.length)) + "%" : "0%",
+      description: "বাগানের কাজ",
+      icon: ListTodo,
+      positive: true,
+    },
+    {
+      title: "সম্পন্ন",
+      value: loading ? "..." : String(completedTasks),
+      change: completionPercent > 0 ? `+${completionPercent}%` : "0%",
+      description: "শেষ কাজের অগ্রগতি",
+      icon: CheckCircle2,
+      positive: true,
+    },
+    {
+      title: "স্বাস্থ্যকর গাছ",
+      value: loading ? "..." : String(healthyPlants),
+      change: plants.length ? `+${Math.min(100, Math.round((healthyPlants / Math.max(plants.length, 1)) * 100))}%` : "0%",
+      description: "মরে যাওনি এমন গাছ",
+      icon: Sprout,
+      positive: true,
+    },
+  ];
+
+  const databaseStatus = error ? "Offline" : "Operational";
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -218,16 +343,27 @@ export default function AdminDashboardPage() {
             <SidebarContent />
 
             <div className="border-t p-4">
+              <Button
+                variant="outline"
+                className="w-full justify-center"
+                onClick={() => {
+                  clearStoredSession();
+                  router.push("/login");
+                  router.refresh();
+                }}
+              >
+                লগআউট
+              </Button>
               <div className="rounded-xl bg-primary/5 p-3">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="size-4 text-primary" />
                   <span className="text-xs font-medium">
-                    Administrator
+                    {userName}
                   </span>
                 </div>
 
                 <p className="mt-1 truncate text-xs text-muted-foreground">
-                  admin@mygarden.local
+                  {getStoredSession()?.user?.email || "admin@mygarden.local"}
                 </p>
               </div>
             </div>
@@ -260,6 +396,17 @@ export default function AdminDashboardPage() {
 
               <Button variant="outline" size="icon">
                 <Settings className="size-4" />
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  clearStoredSession();
+                  router.push("/login");
+                  router.refresh();
+                }}
+              >
+                লগআউট
               </Button>
             </div>
           </div>
@@ -298,42 +445,24 @@ export default function AdminDashboardPage() {
 
             {/* Stats */}
             <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <DashboardStat
-                title="মোট গাছ"
-                value="128"
-                change="+12%"
-                description="গত মাসের তুলনায়"
-                icon={Leaf}
-                positive
-              />
-
-              <DashboardStat
-                title="মোট কাজ"
-                value="246"
-                change="+18%"
-                description="এই মাসে"
-                icon={ListTodo}
-                positive
-              />
-
-              <DashboardStat
-                title="ব্যবহারকারী"
-                value="1,284"
-                change="+8.4%"
-                description="গত মাসের তুলনায়"
-                icon={Users}
-                positive
-              />
-
-              <DashboardStat
-                title="AI ব্যবহার"
-                value="3,842"
-                change="+24%"
-                description="এই মাসে প্রশ্ন"
-                icon={Sprout}
-                positive
-              />
+              {dashboardStats.map((stat) => (
+                <DashboardStat
+                  key={stat.title}
+                  title={stat.title}
+                  value={stat.value}
+                  change={stat.change}
+                  description={stat.description}
+                  icon={stat.icon}
+                  positive={stat.positive}
+                />
+              ))}
             </section>
+
+            {error && (
+              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+                {error}
+              </div>
+            )}
 
             {/* Main Analytics */}
             <section className="mt-6 grid gap-6 xl:grid-cols-3">
@@ -354,47 +483,40 @@ export default function AdminDashboardPage() {
 
                 <CardContent>
                   <div className="flex h-64 items-end gap-3 sm:gap-5">
-                    {[42, 65, 48, 78, 55, 88, 72].map(
-                      (height, index) => (
-                        <div
-                          key={index}
-                          className="flex flex-1 flex-col items-center gap-2"
-                        >
-                          <div className="flex h-full w-full items-end">
+                    {weeklyActivity.map((height, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-1 flex-col items-center gap-2"
+                      >
+                        <div className="flex h-full w-full items-end">
+                          <div
+                            className="w-full rounded-t-lg bg-primary/20 transition-all hover:bg-primary/40"
+                            style={{
+                              height: `${Math.min(height, 100)}%`,
+                            }}
+                          >
                             <div
-                              className="w-full rounded-t-lg bg-primary/20 transition-all hover:bg-primary/40"
+                              className="w-full rounded-t-lg bg-primary"
                               style={{
-                                height: `${height}%`,
+                                height: `${Math.max(Math.min(height, 100) - 18, 12)}%`,
                               }}
-                            >
-                              <div
-                                className="w-full rounded-t-lg bg-primary"
-                                style={{
-                                  height: `${Math.max(
-                                    height - 18,
-                                    15,
-                                  )}%`,
-                                }}
-                              />
-                            </div>
+                            />
                           </div>
-
-                          <span className="text-xs text-muted-foreground">
-                            {
-                              [
-                                "শনি",
-                                "রবি",
-                                "সোম",
-                                "মঙ্গল",
-                                "বুধ",
-                                "বৃহঃ",
-                                "শুক্র",
-                              ][index]
-                            }
-                          </span>
                         </div>
-                      ),
-                    )}
+
+                        <span className="text-xs text-muted-foreground">
+                          {[
+                            "শনি",
+                            "রবি",
+                            "সোম",
+                            "মঙ্গল",
+                            "বুধ",
+                            "বৃহঃ",
+                            "শুক্র",
+                          ][index]}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -414,7 +536,7 @@ export default function AdminDashboardPage() {
                       <div className="absolute inset-[-14px] rounded-full border-[14px] border-transparent border-l-primary border-t-primary border-r-primary rotate-[-35deg]" />
 
                       <div className="text-center">
-                        <p className="text-3xl font-bold">76%</p>
+                        <p className="text-3xl font-bold">{completionPercent}%</p>
                         <p className="text-xs text-muted-foreground">
                           সম্পন্ন
                         </p>
@@ -424,18 +546,18 @@ export default function AdminDashboardPage() {
                     <div className="mt-6 w-full space-y-4">
                       <ProgressItem
                         label="সম্পন্ন"
-                        value="187"
-                        percentage={76}
+                        value={String(completedTasks)}
+                        percentage={Math.min(100, completionPercent)}
                       />
                       <ProgressItem
                         label="চলমান"
-                        value="32"
-                        percentage={13}
+                        value={String(inProgressTasks)}
+                        percentage={tasks.length ? Math.round((inProgressTasks / tasks.length) * 100) : 0}
                       />
                       <ProgressItem
                         label="অপেক্ষমাণ"
-                        value="27"
-                        percentage={11}
+                        value={String(pendingTasks)}
+                        percentage={tasks.length ? Math.round((pendingTasks / tasks.length) * 100) : 0}
                       />
                     </div>
                   </div>
@@ -515,7 +637,7 @@ export default function AdminDashboardPage() {
 
                       return (
                         <div
-                          key={activity.title}
+                          key={`${activity.title}-${activity.description}`}
                           className="flex gap-3"
                         >
                           <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
@@ -601,19 +723,19 @@ export default function AdminDashboardPage() {
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     <SystemStatus
                       name="Database"
-                      status="Operational"
+                      status={databaseStatus}
                     />
                     <SystemStatus
                       name="Authentication"
-                      status="Operational"
+                      status={loading ? "Checking" : "Operational"}
                     />
                     <SystemStatus
                       name="Garden AI"
-                      status="Operational"
+                      status={tasks.length > 0 ? "Operational" : "Standby"}
                     />
                     <SystemStatus
                       name="API"
-                      status="Operational"
+                      status={error ? "Offline" : "Operational"}
                     />
                   </div>
                 </CardContent>

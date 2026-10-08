@@ -1141,15 +1141,15 @@ export type StoredPlant = {
 };
 
 export function mergeStoredPlants(records: StoredPlant[]): Plant[] {
-  const recordsByName = new Map(
-    records.map((record) => [record.name.trim().toLocaleLowerCase(), record]),
-  );
-  const seedNames = new Set(
-    plants.map((plant) => plant.name.trim().toLocaleLowerCase()),
-  );
+  const recordsByName = new Map<string, StoredPlant[]>();
+  for (const record of records) {
+    const name = record.name.trim().toLocaleLowerCase();
+    recordsByName.set(name, [...(recordsByName.get(name) ?? []), record]);
+  }
 
   const mergedSeeds = plants.map((seed) => {
-    const record = recordsByName.get(seed.name.trim().toLocaleLowerCase());
+    const name = seed.name.trim().toLocaleLowerCase();
+    const record = recordsByName.get(name)?.shift();
     if (!record) return seed;
 
     return {
@@ -1173,8 +1173,8 @@ export function mergeStoredPlants(records: StoredPlant[]): Plant[] {
     };
   });
 
-  const newRecords = records
-    .filter((record) => !seedNames.has(record.name.trim().toLocaleLowerCase()))
+  const newRecords = Array.from(recordsByName.values())
+    .flat()
     .map((record): Plant => ({
       id: record._id,
       name: record.name,
