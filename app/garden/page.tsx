@@ -41,7 +41,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function GardenPage() {
-  const [plants, setPlants] = useState(seedPlants);
+  const [plants, setPlants] = useState<Plant[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("সব");
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
@@ -51,11 +51,15 @@ export default function GardenPage() {
       try {
         const response = await fetch("/api/plants", { cache: "no-store" });
         const result = await response.json();
-        if (response.ok) {
+
+        if (response.ok && Array.isArray(result?.data)) {
           setPlants(mergeStoredPlants(result.data as StoredPlant[]));
+          return;
         }
+
+        setPlants(seedPlants);
       } catch {
-        // Keep the bundled garden records available when MongoDB is offline.
+        setPlants(seedPlants);
       }
     }
 

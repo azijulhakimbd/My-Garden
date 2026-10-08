@@ -7,9 +7,8 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { Navbar } from "@/components/home/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
-import Footer from "@/components/home/Footer";
+import { AppShell } from "@/components/app-shell";
 const notoSansBengali = Noto_Sans_Bengali({
   subsets: ["bengali"],
   variable: "--font-bengali",
@@ -67,11 +66,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen flex-col">
-            
-            <Navbar /> <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>

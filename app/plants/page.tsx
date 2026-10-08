@@ -540,7 +540,7 @@ function PlantDetails({
 ========================================================= */
 
 export default function PlantsPage() {
-  const [gardenPlants, setGardenPlants] = useState(plants);
+  const [gardenPlants, setGardenPlants] = useState<Plant[]>([]);
   const [search, setSearch] = useState("");
 
   const [selectedCategory, setSelectedCategory] = useState<
@@ -559,11 +559,15 @@ export default function PlantsPage() {
       try {
         const response = await fetch("/api/plants", { cache: "no-store" });
         const result = await response.json();
-        if (response.ok) {
+
+        if (response.ok && Array.isArray(result?.data)) {
           setGardenPlants(mergeStoredPlants(result.data as StoredPlant[]));
+          return;
         }
+
+        setGardenPlants(plants);
       } catch {
-        // Keep the bundled garden records available when MongoDB is offline.
+        setGardenPlants(plants);
       }
     }
 

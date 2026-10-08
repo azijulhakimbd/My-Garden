@@ -1,4 +1,9 @@
 
+/*
+ * This file contains the bundled fallback plant catalog for offline/demo use.
+ * Live garden data is fetched from MongoDB through /api/plants and merged here.
+ */
+
 export type PlantCategory =
   | "ফলজ"
   | "সাইট্রাস"
