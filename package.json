@@ -14,6 +14,7 @@
     "@teispace/next-themes": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
+    "framer-motion": "^14.0.0",
     "lucide-react": "^1.47.0",
     "mongoose": "^9.11.1",
     "next": "16.3.6",

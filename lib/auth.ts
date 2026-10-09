@@ -2,8 +2,7 @@ import crypto from "node:crypto";
 
 const AUTH_SECRET =
   process.env.AUTH_SECRET ||
-  process.env.JWT_SECRET ||
-  "mah-garden-dev-secret-change-me";
+  process.env.JWT_SECRET;
 
 export function hashPassword(password: string) {
   const salt = crypto.randomBytes(16).toString("hex");
