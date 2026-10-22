@@ -523,7 +523,7 @@ export const plants: Plant[] = [
     status: "গাছ ছোট ও ফল হয়নি",
     growthStage: "ছোট",
     icon: "🌿",
-    image: "",
+    image: "https://i.postimg.cc/kG9DH9qC/IMG-20261022-062250.jpg",
     timeline: createTimeline(
       20,
       "বৃক্ষ মেলা ২০২৫, শেরপুর",
@@ -690,7 +690,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
     icon: "🌳",
-    image: "",
+    image: "https://i.postimg.cc/hjVfMhF6/IMG-20261022-062014.jpg",
     timeline: createTimeline(
       28,
       "২০২৬",
