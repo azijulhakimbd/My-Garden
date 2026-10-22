@@ -339,7 +339,7 @@ export const plants: Plant[] = [
     growthStage: "ফুল",
     nursery: "শাহিন নার্সারি",
     icon: "🌳",
-    image: "",
+    image: "/public/images/IMG_20261022_060917.jpg",
     timeline: createTimeline(
       11,
       "২২ আগস্ট ২০২২",
@@ -359,12 +359,12 @@ export const plants: Plant[] = [
     status: "ফল হয়নি",
     growthStage: "বর্ধনশীল",
     icon: "🌿",
-    image: "",
+    image: "/public/images/IMG_20261022_061907.jpg",
     timeline: createTimeline(
       12,
       "সেপ্টেম্বর ২০২২",
       "অরবরই",
-      "ফল হয়নি",
+      "ফল হয়নি",
     ),
   },
 
@@ -379,12 +379,12 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🍋",
-    image: "",
+    image: "https://i.postimg.cc/j5yLvC0T/IMG-20261022-062152.jpg",
     timeline: createTimeline(
       13,
       "২০২৩",
       "কাগছি লেবু",
-      "ফল হয়েছে",
+      "ফল হয়েছে",
     ),
   },
 
@@ -399,12 +399,12 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🌳",
-    image: "",
+    image: "/public/images/IMG_20261022_062143.jpg",
     timeline: createTimeline(
       14,
       "২০২৪",
       "বল সুন্দরী",
-      "ফল হয়েছে",
+      "ফল হয়েছে",
     ),
   },
 
@@ -420,12 +420,12 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🥭",
-    image: "",
+    image: "/public/images/IMG_20261022_061809.jpg",
     timeline: createTimeline(
       15,
       "২০২৫",
       "পেঁপে",
-      "ফল হয়েছে",
+      "ফল হয়েছে",
     ),
   },
 

@@ -3,13 +3,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import {
   ArrowLeft,
   LockKeyhole,
   Mail,
   Sprout,
 } from "lucide-react";
+import Swal from "sweetalert2";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,19 +23,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /*
-   * If already logged in:
-   * admin → /admin
-   * user  → /
-   */
   useEffect(() => {
     const session = getStoredSession();
 
-    if (!session) {
-      return;
-    }
+    if (!session) return;
 
-    if (session.user?.role === "admin") {
+    if (session.user.role === "admin") {
       router.replace("/admin");
     } else {
       router.replace("/");
@@ -49,95 +43,94 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const formData = new FormData(
-      event.currentTarget,
-    );
+    const formData = new FormData(event.currentTarget);
 
     const payload = {
-      email: String(
-        formData.get("email") || "",
-      )
+      email: String(formData.get("email") || "")
         .trim()
         .toLowerCase(),
-
-      password: String(
-        formData.get("password") || "",
-      ),
+      password: String(formData.get("password") || ""),
     };
 
     if (!payload.email || !payload.password) {
-      setError(
-        "ইমেইল এবং পাসওয়ার্ড প্রদান করুন।",
-      );
-
+      setError("ইমেইল এবং পাসওয়ার্ড প্রদান করুন।");
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch(
-        "/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(payload),
+      });
 
       const result = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || result.success !== true) {
         throw new Error(
-          result.message ||
-            "Invalid email or password.",
+          result.message || "ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।",
         );
       }
 
-      const user = result?.data?.user;
-      const token = result?.data?.token;
+      const user = result.data?.user;
+      const token = result.data?.token;
 
-      if (!user || !token) {
+      if (
+        !user ||
+        !token ||
+        typeof user.email !== "string" ||
+        (user.role !== "admin" && user.role !== "user")
+      ) {
         throw new Error(
-          "Login response is invalid.",
+          "লগইন response সঠিক নয়। আবার চেষ্টা করুন।",
         );
       }
 
-      /*
-       * Store authentication data.
-       */
-      if (typeof window !== "undefined") {
-        localStorage.setItem(
-          "mah-garden-token",
-          token,
-        );
+      // Save the same session format used by ProtectedRoute.
+      localStorage.setItem("mah-garden-token", token);
+      localStorage.setItem(
+        "mah-garden-user",
+        JSON.stringify(user),
+      );
 
-        localStorage.setItem(
-          "mah-garden-user",
-          JSON.stringify(user),
-        );
-      }
+      await Swal.fire({
+        icon: "success",
+        title: "লগইন সফল!",
+        text:
+          user.role === "admin"
+            ? "অ্যাডমিন ড্যাশবোর্ডে নিয়ে যাওয়া হচ্ছে..."
+            : "স্বাগতম! হোম পেজে নিয়ে যাওয়া হচ্ছে।",
+        timer: 1200,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
 
-      /*
-       * Role-based redirect.
-       *
-       * admin → Admin Dashboard
-       * user  → Home
-       */
+      // Replace the login history entry with the destination.
       if (user.role === "admin") {
-        router.push("/admin");
+        router.replace("/admin");
       } else {
-        router.push("/");
+        router.replace("/");
       }
 
       router.refresh();
     } catch (err) {
-      setError(
+      const message =
         err instanceof Error
           ? err.message
-          : "লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
-      );
+          : "লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+
+      setError(message);
+
+      await Swal.fire({
+        icon: "error",
+        title: "লগইন ব্যর্থ!",
+        text: message,
+        confirmButtonText: "আবার চেষ্টা করুন",
+        confirmButtonColor: "#16a34a",
+      });
     } finally {
       setLoading(false);
     }
@@ -146,7 +139,6 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-green-50 px-4 py-10 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
       <div className="w-full max-w-md">
-        {/* Back to home */}
         <Link
           href="/"
           className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
@@ -156,7 +148,6 @@ export default function LoginPage() {
         </Link>
 
         <div className="rounded-3xl border bg-card p-6 shadow-xl shadow-emerald-500/5 sm:p-8">
-          {/* Header */}
           <div className="mb-6 flex flex-col items-center text-center">
             <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-600/20">
               <Sprout className="size-6" />
@@ -171,16 +162,9 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Login Form */}
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-5"
-          >
-            {/* Email */}
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">
-                ইমেইল
-              </Label>
+              <Label htmlFor="email">ইমেইল</Label>
 
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -197,11 +181,8 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password">
-                পাসওয়ার্ড
-              </Label>
+              <Label htmlFor="password">পাসওয়ার্ড</Label>
 
               <div className="relative">
                 <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -213,13 +194,11 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   className="pl-10"
                   autoComplete="current-password"
-                  minLength={6}
                   required
                 />
               </div>
             </div>
 
-            {/* Error */}
             {error && (
               <div
                 role="alert"
@@ -229,19 +208,15 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Submit */}
             <Button
               type="submit"
               className="w-full"
               disabled={loading}
             >
-              {loading
-                ? "সাইন ইন হচ্ছে..."
-                : "লগইন"}
+              {loading ? "সাইন ইন হচ্ছে..." : "লগইন"}
             </Button>
           </form>
 
-          {/* Register */}
           <p className="mt-6 text-center text-sm text-muted-foreground">
             অ্যাকাউন্ট নেই?{" "}
             <Link
