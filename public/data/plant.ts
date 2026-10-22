@@ -463,7 +463,7 @@ export const plants: Plant[] = [
     nursery: "বিনা, নালিতাবাড়ী উপকেন্দ্র",
     note: "বিনা ১ লেবুর চারা বিনামূল্যে সংগ্রহ করা হয়েছে।",
     icon: "🍋",
-    image: "",
+    image: "https://i.postimg.cc/Njb87J8D/IMG-20261022-061321.jpg",
     timeline: createTimeline(
       17,
       "২০২৫",
@@ -733,7 +733,7 @@ export const plants: Plant[] = [
     nursery: "চান মিয়া, গোজাকুড়া",
     variety: "কাটিমন",
     icon: "🥭",
-    image: "",
+    image: "https://i.postimg.cc/903yFv2K/IMG-20261022-061420.jpg",
     timeline: createTimeline(
       30,
       "জুন ২০২৬",
@@ -754,7 +754,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🍈",
-    image: "",
+    image: "https://i.postimg.cc/yNtZvwDg/IMG-20261022-061653.jpg",
     timeline: createTimeline(
       31,
       "জুন ২০২৬",
