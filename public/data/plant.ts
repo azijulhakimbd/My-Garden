@@ -359,7 +359,7 @@ export const plants: Plant[] = [
     status: "ফল হয়নি",
     growthStage: "বর্ধনশীল",
     icon: "🌿",
-    image: "/public/images/IMG_20261022_061907.jpg",
+    image: "https://i.postimg.cc/zfbLb0xB/IMG-20261022-061907.jpg",
     timeline: createTimeline(
       12,
       "সেপ্টেম্বর ২০২২",
@@ -399,7 +399,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🌳",
-    image: "/public/images/IMG_20261022_062143.jpg",
+    image: "https://i.postimg.cc/85Ljws8q/IMG-20261022-062130.jpg",
     timeline: createTimeline(
       14,
       "২০২৪",
