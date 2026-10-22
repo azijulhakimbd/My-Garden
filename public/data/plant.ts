@@ -420,7 +420,7 @@ export const plants: Plant[] = [
     growthStage: "ফল",
     nursery: "চান মিয়া, গোজাকুড়া",
     icon: "🥭",
-    image: "/public/images/IMG_20261022_061809.jpg",
+    image: "https://i.postimg.cc/sg2GyVSW/IMG-20261022-061809.jpg",
     timeline: createTimeline(
       15,
       "২০২৫",
@@ -441,7 +441,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     nursery: "স্মৃতি নার্সারি, বনকালী",
     icon: "🌿",
-    image: "",
+    image: "https://i.postimg.cc/c4ycs84H/IMG-20261022-060930.jpg",
     timeline: createTimeline(
       16,
       "২০২৫",
@@ -563,7 +563,7 @@ export const plants: Plant[] = [
     status: "ফল হয়েছে",
     growthStage: "ফল",
     icon: "🍎",
-    image: "",
+    image: "https://i.postimg.cc/SN6fjNnq/IMG-20261022-061138.jpg",
     timeline: createTimeline(
       22,
       "সেপ্টেম্বর ২০২৫",
@@ -584,7 +584,7 @@ export const plants: Plant[] = [
     growthStage: "ছোট",
     note: "মূল তালিকায় দাম 'ঐ' হিসেবে দেওয়া ছিল।",
     icon: "🍏",
-    image: "",
+    image: "https://i.postimg.cc/zGqShZhn/IMG-20261022-061312.jpg",
     timeline: createTimeline(
       23,
       "সেপ্টেম্বর ২০২৫",
