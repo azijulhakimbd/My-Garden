@@ -1009,7 +1009,7 @@ export const plants: Plant[] = [
     nursery: "মুক্তা নার্সারি, বনগাঁও নয়াপাড়া",
     variety: "বাইকুনুর",
     icon: "🍇",
-    image: "",
+    image: "https://i.postimg.cc/6qL46qY8/IMG-20261022-061716.jpg",
     timeline: createTimeline(
       43,
       "৬ সেপ্টেম্বর ২০২৬",
