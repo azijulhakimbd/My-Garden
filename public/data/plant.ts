@@ -902,7 +902,7 @@ export const plants: Plant[] = [
     growthStage: "ফুল",
     note: "মূল তালিকায় 'ফুল' উল্লেখ করা হয়েছে।",
     icon: "🌳",
-    image: "",
+    image: "https://i.postimg.cc/qBCLVG0v/IMG-20261022-060959.jpg",
     timeline: createTimeline(
       38,
       "২২ আগস্ট ২০২৬",
